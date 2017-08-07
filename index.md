@@ -8,7 +8,7 @@ layout: frontpage
 
 我的GitHub BLOG地址：[胡胜同学](https://hushengstudent.github.io/)
 
-我的CODING BLOG地址：[胡胜同学](http://hushengstudent.coding.me/)
+我的码云 BLOG地址：[胡胜同学](http://hushengstudent.oschina.io/)
 
 我的CSDN BLOG地址：[胡胜同学](http://blog.csdn.net/husheng0)
 
