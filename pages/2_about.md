@@ -5,9 +5,8 @@ comments: true
 permalink: /about/
 ---
 
-* content
+* 目录
 {:toc}
 
-## About the site
+# 我的简介
 我是胡胜同学。
-
