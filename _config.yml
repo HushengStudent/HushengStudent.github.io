@@ -1,5 +1,5 @@
 # Site settings
-title: LiXizhi's Personal Website
+title: 胡胜同学
 email: lixizhi@yeah.net
 description: Xizhi's Ideas & Blogs
 # > # this means to ignore newlines until "baseurl:"
@@ -22,7 +22,7 @@ newsourceroot: https://github.com/LiXizhi/LiXizhi.github.io/new/master
 #duoshuo_url: "http://lixizhi.github.io"
 # disqus.com commenting system. please note that it is exclusive with duoshuo.com
 disqus_shortname: lixizhi
-disqus_url: "http://lixizhi.github.io"
+disqus_url: "https://hushengstudent.github.io"
 #########################################
 
 # Build settings
