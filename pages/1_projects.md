@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Projects
+title: My Project
 comments: true
 permalink: /projects/
 ---
@@ -8,7 +8,7 @@ permalink: /projects/
 * content
 {:toc}
 
-# All my projects
+# 我的项目
 Following are projects started by me. 
 
 ## NPL project
