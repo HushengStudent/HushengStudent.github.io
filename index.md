@@ -2,7 +2,7 @@
 layout: frontpage
 ---
 
-## Welcome to my website
+## 欢迎您来到 胡胜同学 的github blog
 
-This is the place where I share my ideas on topics like [Paracraft](http://www.paracraft.cn) software design, artificial intelligence and education. 
-Feel free to send me emails or join our team. 
+我的GitHub地址：[胡胜同学](https://github.com/HushengStudent). 
+我的CSDN BLOG地址：[胡胜同学](http://blog.csdn.net/husheng0). 
