@@ -1,0 +1,9 @@
+---
+layout: post
+title:  "[设计模式]框架和设计模式的区别"
+date:   2015-04-14 12:10:10
+categories: d9---【设计模式】
+comments: true
+---
+
+# [设计模式]框架和设计模式的区别
