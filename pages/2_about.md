@@ -5,7 +5,7 @@ comments: true
 permalink: /about/
 ---
 
-* 目录
+* content
 {:toc}
 
 # 我的简介

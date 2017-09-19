@@ -1,4 +1,5 @@
 # Site settings
+#开头
 title: 胡胜同学   做一个有本事的男人！
 email: husheng.student@foxmail.com
 description:
@@ -10,19 +11,21 @@ description:
 # baseurl: "" # the subpath of your site, e.g. /blog/
 # url: "http://yourdomain.com" # the base hostname & protocol for your site
 # twitter_username: jekyllrb
+#链接
 github_username: HushengStudent
 permalink: /:year/:month/:day/:title/
 # this is the url root of the view source link on the footer page.
-# viewsourceroot: https://github.com/HushengStudent/HushengStudent.github.io/blob/master/
+viewsourceroot: https://github.com/HushengStudent
 # this is the url root of the create page link on the footer page.
-# newsourceroot: https://github.com/HushengStudent/HushengStudent.github.io/new/master
+newsourceroot: https://github.com/HushengStudent
 #########################################
 # for duoshuo.com commenting system, uncomment following line if you do not want to include duoshuo.com. 
 #duoshuo_shortname: lixizhi
 #duoshuo_url: "http://lixizhi.github.io"
 # disqus.com commenting system. please note that it is exclusive with duoshuo.com
-disqus_shortname: 胡胜同学
-disqus_url: "https://hushengstudent.github.io"
+#评论
+#disqus_shortname: 胡胜同学
+#disqus_url: "https://hushengstudent.github.io"
 #########################################
 
 # Build settings
