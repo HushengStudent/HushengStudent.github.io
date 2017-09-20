@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "[设计模式]工厂模式(Java实现)"
-date:   2001-01-10 15:14:39
+date:   2001-01-10 15:14:19
 categories: 39---【设计模式】 19---【Java】
 comments: true
 ---
