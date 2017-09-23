@@ -1,0 +1,371 @@
+---
+layout: post
+title:  "[Android]Android_网络应用详解"
+date:   2015-06-14 16:20:10
+categories: 17---【Android】#########
+comments: true
+---
+
+#### ①WebView的用法
+WebView控件的简单用法：
+```java
+public class MainActivity extends Activity {  
+  
+    private WebView webView;  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+        webView = (WebView) findViewById(R.id.web_view);  
+        webView.getSettings().setJavaScriptEnabled(true);  
+        webView.setWebViewClient(new WebViewClient() {  
+            @Override  
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {  
+                // 根据传入的参数再去加载新的网页  
+                view.loadUrl(url);  
+                // 表示当前WebView可以处理打开新网页的请求，不用借助系统浏览器  
+                return true;  
+            }  
+        });  
+        webView.loadUrl("http://www.baidu.com");  
+    }  
+}  
+```
+#### ②使用HTTP协议访问网络
+在Android上发送HTTP请求一般有两种方式，HttpURLConnection和HttpClient。
+
+1、使用HttpURLConnection：
+
+使用方法：
+```java
+URL url = new URL("http://www.baidu.com");  
+HttpURLConnection   connection = (HttpURLConnection) url.openConnection();  
+
+```
+```java
+private void sendRequestWithHttpURLConnection() {  
+        // 开启线程来发起网络请求  
+        new Thread(new Runnable() {  
+            @Override  
+            public void run() {  
+                HttpURLConnection connection = null;  
+                try {  
+                    URL url = new URL("http://www.baidu.com");  
+                    connection = (HttpURLConnection) url.openConnection();  
+                    connection.setRequestMethod("GET");  
+                    connection.setConnectTimeout(8000);  
+                    connection.setReadTimeout(8000);  
+                    connection.setDoInput(true);  
+                    connection.setDoOutput(true);  
+                    InputStream in = connection.getInputStream();  
+                    // 下面对获取到的输入流进行读取  
+                    BufferedReader reader = new BufferedReader(  
+                            new InputStreamReader(in));  
+                    StringBuilder response = new StringBuilder();  
+                    String line;  
+                    while ((line = reader.readLine()) != null) {  
+                        response.append(line);  
+                    }  
+                    Message message = new Message();  
+                    message.what = SHOW_RESPONSE;  
+                    // 将服务器返回的结果存放到Message中  
+                    message.obj = response.toString();  
+                    handler.sendMessage(message);  
+                } catch (Exception e) {  
+                    e.printStackTrace();  
+                } finally {  
+                    if (connection != null) {  
+                        connection.disconnect();  
+                    }  
+                }  
+            }  
+        }).start();  
+    }  
+```
+2、使用HttpClient：
+
+使用方法：
+```java
+HttpClient httpClient = new DefaultHttpClient();      // 指定访问的服务器地址是电脑本机  
+HttpGet httpGet = new HttpGet("http://10.0.2.2/get_data.json");  
+HttpResponse httpResponse = httpClient.execute(httpGet); 
+```
+3、解析XML格式数据：
+
+pull解析方式
+
+SAX解析方式
+
+下面一个综合实例：
+```java
+public class MainActivity extends Activity implements OnClickListener {  
+  
+    public static final int SHOW_RESPONSE = 0;  
+  
+    private Button sendRequest;  
+  
+    private TextView responseText;  
+  
+    private Handler handler = new Handler() {  
+  
+        public void handleMessage(Message msg) {  
+            switch (msg.what) {  
+            case SHOW_RESPONSE:  
+                String response = (String) msg.obj;  
+                // 在这里进行UI操作，将结果显示到界面上  
+                responseText.setText(response);  
+            }  
+        }  
+  
+    };  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+        sendRequest = (Button) findViewById(R.id.send_request);  
+        responseText = (TextView) findViewById(R.id.response_text);  
+        sendRequest.setOnClickListener(this);  
+    }  
+  
+    @Override  
+    public void onClick(View v) {  
+        if (v.getId() == R.id.send_request) {  
+            sendRequestWithHttpClient();  
+        }  
+    }  
+  
+    private void sendRequestWithHttpClient() {  
+        new Thread(new Runnable() {  
+            @Override  
+            public void run() {  
+                try {  
+                    HttpClient httpClient = new DefaultHttpClient();  
+                    // 指定访问的服务器地址是电脑本机  
+                    HttpGet httpGet = new HttpGet(  
+                            "http://10.0.2.2/get_data.json");  
+                    HttpResponse httpResponse = httpClient.execute(httpGet);  
+                    if (httpResponse.getStatusLine().getStatusCode() == 200) {  
+                        // 请求和响应都成功了  
+                        HttpEntity entity = httpResponse.getEntity();  
+                        String response = EntityUtils.toString(entity, "utf-8");  
+                        parseJSONWithGSON(response);  
+                        // parseJSONWithJSONObject(response);  
+                        // parseXMLWithPull(response);  
+                        // parseXMLWithSAX(response);  
+                        // Message message = new Message();  
+                        // message.what = SHOW_RESPONSE;  
+                        // // 将服务器返回的结果存放到Message中  
+                        // message.obj = response.toString();  
+                        // handler.sendMessage(message);  
+                    }  
+                } catch (Exception e) {  
+                    e.printStackTrace();  
+                }  
+            }  
+        }).start();  
+    }  
+  
+    private void sendRequestWithHttpURLConnection() {  
+        // 开启线程来发起网络请求  
+        new Thread(new Runnable() {  
+            @Override  
+            public void run() {  
+                HttpURLConnection connection = null;  
+                try {  
+                    URL url = new URL("http://www.baidu.com");  
+                    connection = (HttpURLConnection) url.openConnection();  
+                    connection.setRequestMethod("GET");  
+                    connection.setConnectTimeout(8000);  
+                    connection.setReadTimeout(8000);  
+                    connection.setDoInput(true);  
+                    connection.setDoOutput(true);  
+                    InputStream in = connection.getInputStream();  
+                    // 下面对获取到的输入流进行读取  
+                    BufferedReader reader = new BufferedReader(  
+                            new InputStreamReader(in));  
+                    StringBuilder response = new StringBuilder();  
+                    String line;  
+                    while ((line = reader.readLine()) != null) {  
+                        response.append(line);  
+                    }  
+                    Message message = new Message();  
+                    message.what = SHOW_RESPONSE;  
+                    // 将服务器返回的结果存放到Message中  
+                    message.obj = response.toString();  
+                    handler.sendMessage(message);  
+                } catch (Exception e) {  
+                    e.printStackTrace();  
+                } finally {  
+                    if (connection != null) {  
+                        connection.disconnect();  
+                    }  
+                }  
+            }  
+        }).start();  
+    }  
+  
+    private void parseJSONWithGSON(String jsonData) {  
+        Gson gson = new Gson();  
+        List<App> appList = gson.fromJson(jsonData, new TypeToken<List<App>>() {  
+        }.getType());  
+        for (App app : appList) {  
+            Log.d("MainActivity", "id is " + app.getId());  
+            Log.d("MainActivity", "name is " + app.getName());  
+            Log.d("MainActivity", "version is " + app.getVersion());  
+        }  
+    }  
+  
+    private void parseJSONWithJSONObject(String jsonData) {  
+        try {  
+            JSONArray jsonArray = new JSONArray(jsonData);  
+            for (int i = 0; i < jsonArray.length(); i++) {  
+                JSONObject jsonObject = jsonArray.getJSONObject(i);  
+                String id = jsonObject.getString("id");  
+                String name = jsonObject.getString("name");  
+                String version = jsonObject.getString("version");  
+                Log.d("MainActivity", "id is " + id);  
+                Log.d("MainActivity", "name is " + name);  
+                Log.d("MainActivity", "version is " + version);  
+            }  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+  
+    private void parseXMLWithSAX(String xmlData) {  
+        try {  
+            SAXParserFactory factory = SAXParserFactory.newInstance();  
+            XMLReader xmlReader = factory.newSAXParser().getXMLReader();  
+            ContentHandler handler = new ContentHandler();  
+            xmlReader.setContentHandler(handler);  
+            xmlReader.parse(new InputSource(new StringReader(xmlData)));  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+  
+    private void parseXMLWithPull(String xmlData) {  
+        try {  
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();  
+            XmlPullParser xmlPullParser = factory.newPullParser();  
+            xmlPullParser.setInput(new StringReader(xmlData));  
+            int eventType = xmlPullParser.getEventType();  
+            String id = "";  
+            String name = "";  
+            String version = "";  
+            while (eventType != XmlPullParser.END_DOCUMENT) {  
+                String nodeName = xmlPullParser.getName();  
+                switch (eventType) {  
+                // 开始解析某个结点  
+                case XmlPullParser.START_TAG: {  
+                    if ("id".equals(nodeName)) {  
+                        id = xmlPullParser.nextText();  
+                    } else if ("name".equals(nodeName)) {  
+                        name = xmlPullParser.nextText();  
+                    } else if ("version".equals(nodeName)) {  
+                        version = xmlPullParser.nextText();  
+                    }  
+                    break;  
+                }  
+                // 完成解析某个结点  
+                case XmlPullParser.END_TAG: {  
+                    if ("app".equals(nodeName)) {  
+                        Log.d("MainActivity", "id is " + id);  
+                        Log.d("MainActivity", "name is " + name);  
+                        Log.d("MainActivity", "version is " + version);  
+                    }  
+                    break;  
+                }  
+                default:  
+                    break;  
+                }  
+                eventType = xmlPullParser.next();  
+            }  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+}  
+```
+```java
+public class ContentHandler extends DefaultHandler {  
+  
+    private String nodeName;  
+  
+    private StringBuilder id;  
+  
+    private StringBuilder name;  
+  
+    private StringBuilder version;  
+  
+    @Override  
+    public void startDocument() throws SAXException {  
+        id = new StringBuilder();  
+        name = new StringBuilder();  
+        version = new StringBuilder();  
+    }  
+  
+    @Override  
+    public void startElement(String uri, String localName, String qName, Attributes attributes)  
+            throws SAXException {  
+        // 记录当前结点名  
+        nodeName = localName;  
+    }  
+  
+    @Override  
+    public void characters(char[] ch, int start, int length) throws SAXException {  
+        // 根据当前的结点名判断将内容添加到哪一个StringBuilder对象中  
+        if ("id".equals(nodeName)) {  
+            id.append(ch, start, length);  
+        } else if ("name".equals(nodeName)) {  
+            name.append(ch, start, length);  
+        } else if ("version".equals(nodeName)) {  
+            version.append(ch, start, length);  
+        }  
+    }  
+  
+    @Override  
+    public void endElement(String uri, String localName, String qName) throws SAXException {  
+        if ("app".equals(localName)) {  
+            Log.d("ContentHandler", "id is " + id.toString().trim());  
+            Log.d("ContentHandler", "name is " + name.toString().trim());  
+            Log.d("ContentHandler", "version is " + version.toString().trim());  
+            id.setLength(0);  
+            name.setLength(0);  
+            version.setLength(0);  
+        }  
+    }  
+  
+    @Override  
+    public void endDocument() throws SAXException {  
+    }  
+  
+}  
+```
+```java
+public class App {  
+    private String id;  
+    private String name;  
+    private String version;  
+    public String getId() {  
+        return id;  
+    }  
+    public void setId(String id) {  
+        this.id = id;  
+    }  
+    public String getName() {  
+        return name;  
+    }  
+    public void setName(String name) {  
+        this.name = name;  
+    }  
+    public String getVersion() {  
+        return version;  
+    }  
+    public void setVersion(String version) {  
+        this.version = version;  
+    }  
+}  
+```
