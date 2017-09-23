@@ -1,0 +1,111 @@
+---
+layout: post
+title:  "[Unity 工具技巧]NGUI技巧总结"
+date:   2017-05-01 23:51:10
+categories: 13---【Unity-工具技巧】 01---【Unity】##########
+comments: true
+---
+
+#### 一、UIWrapContent的使用实现UI复用
+NGUI提供的一种实现UI复用的一种实现方式UIWrapContent.cs，其中WrapContent()主要实现UI的复用功能，UpdateItem()会调用onInitializeItem委托。
+
+#### 二、Scrollview复位
+可以通过控制UIScrollBar来实现复位，UIDragScrollView.cs滑动区域。
+
+#### 三、自定义Mesh/骨骼与NGUI的渲染层级关系
+1、控制NGUI的RenderQueue的value。
+
+2、也可以使用多个相机控制。
+
+3、可以使用Shader通过z值来进行控制。
+
+#### 四、NGUI内置Shader
+NGUI内置Shader分为两种，一种可打成AssetBundle，另一种只能Resource目录下，这一种一般以“Hidden/......”开头。
+
+#### 五、实现UI复用的另一种方式
+在滑动列表不是单列的时候，我们可以继承UIGrid，模仿UIWrapContent来实现通用滑动列表的UI复用。
+
+#### 六、UIDrawCall
+UIDrawCall BetterList
+
+#### 七、Mesh网格
+大概有3件事情是你想要使用可修改的网格接口：
+
+1、新建一个网格,应该按照这个顺序来做：
+
+①为顶点数组赋值。
+
+②为三角形数组赋值。
+
+```java
+using UnityEngine;  
+using System.Collections;  
+   
+public class ExampleClass : MonoBehaviour {  
+    public Vector3[] newVertices;  
+    public Vector2[] newUV;  
+    public int[] newTriangles;  
+    void Start() {  
+        Mesh mesh = new Mesh();  
+        GetComponent<MeshFilter>().mesh = mesh;  
+        mesh.vertices = newVertices;  
+        mesh.uv = newUV;  
+        mesh.triangles = newTriangles;  
+    }  
+}  
+```
+
+2、每帧修改顶点属性：
+
+①获取顶点数组。
+
+②修改它们。
+
+③赋回网格
+
+```java
+using UnityEngine;  
+using System.Collections;  
+   
+public class ExampleClass : MonoBehaviour {  
+    void Update() {  
+        Mesh mesh = GetComponent<MeshFilter>().mesh;  
+        Vector3[] vertices = mesh.vertices;  
+        Vector3[] normals = mesh.normals;  
+        int i = 0;  
+        while (i < vertices.Length) {  
+            vertices[i] += normals[i] * Mathf.Sin(Time.time);  
+            i++;  
+        }  
+        mesh.vertices = vertices;  
+    }  
+}  
+```
+
+3、连续的改变网格的三角形数组值和顶点值 
+
+①使用Clean刷新。
+
+②指定顶点值和其他属性。
+
+③指定索引值
+
+```java
+using UnityEngine;  
+using System.Collections;  
+   
+public class ExampleClass : MonoBehaviour {  
+    public Vector3[] newVertices;  
+    public Vector2[] newUV;  
+    public int[] newTriangles;  
+    void Update() {  
+        Mesh mesh = GetComponent<MeshFilter>().mesh;  
+        mesh.Clear();  
+        mesh.vertices = newVertices;  
+        mesh.uv = newUV;  
+        mesh.triangles = newTriangles;  
+    }  
+}  
+```
+
+调用Clean函数在赋予新的顶点值和三角形索引值之前是非常重要的，Unity总是检查三角形的索引值，判断它们是否超出边界。调用Clear函数后，给顶点赋值，再给三角形数组赋值，以确保没有超出数组的边界。

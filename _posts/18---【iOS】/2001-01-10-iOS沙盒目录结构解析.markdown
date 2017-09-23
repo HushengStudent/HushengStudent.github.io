@@ -1,0 +1,117 @@
+---
+layout: post
+title:  "[iOS]iOS沙盒目录结构解析"
+date:   2001-01-10 10:10:10
+categories: 18---【iOS】
+comments: true
+---
+
+出于安全考虑，iOS系统的沙盒机制规定每个应用都只能访问当前沙盒目录下面的文件（也有例外，比如系统通讯录能在用户授权的情况下被第三方应用访问），这个规则把iOS系统的封闭性展现的淋漓尽致。
+
+每个沙盒下面都有相似的目录结构，如下图所示（出自苹果官方文档）：
+
+每个应用的沙盒目录都是相似的，主要包含图中所示的4个目录：
+
+1、MyApp.app
+
+①存放内容
+
+该目录包含了应用程序本身的数据，包括资源文件和可执行文件等。程序启动以后，会根据需要从该目录中动态加载代码或资源到内存，这里用到了lazy loading的思想。
+
+②整个目录是只读的
+
+为了防止被篡改，应用在安装的时候会将该目录签名。非越狱情况下，该目录中内容是无法更改的；在越狱设备上如果更改了目录内容，对应的签名就会被改变，这种情况下苹果官网描述的后果是应用程序将无法启动，我没实践过。
+
+③是否会被iTunes同步
+
+否
+
+2、Documents
+
+①存放内容
+
+我们可以将应用程序的数据文件保存在该目录下。不过这些数据类型仅限于不可再生的数据，可再生的数据文件应该存放在Library/Cache目录下。
+
+②是否会被iTunes同步
+
+是
+
+3、Documents/Inbox
+
+①存放内容
+
+该目录用来保存由外部应用请求当前应用程序打开的文件。
+
+比如我们的应用叫A，向系统注册了几种可打开的文件格式，B应用有一个A支持的格式的文件F，并且申请调用A打开F。由于F当前是在B应用的沙盒中，我们知道，沙盒机制是不允许A访问B沙盒中的文件，因此苹果的解决方案是讲F拷贝一份到A应用的Documents/Inbox目录下，再让A打开F。
+
+②是否会被iTunes同步
+
+是
+
+4、Library
+
+①存放内容
+
+苹果建议用来存放默认设置或其它状态信息。
+
+②是否会被iTunes同步
+
+是，但是要除了Caches子目录外
+
+5、Library/Caches
+
+①存放内容
+
+主要是缓存文件，用户使用过程中缓存都可以保存在这个目录中。前面说过，Documents目录用于保存不可再生的文件，那么这个目录就用于保存那些可再生的文件，比如网络请求的数据。鉴于此，应用程序通常还需要负责删除这些文件。
+
+②是否会被iTunes同步
+
+否。
+
+6、Library/Preferences
+
+①存放内容
+
+应用程序的偏好设置文件。我们使用NSUserDefaults写的设置数据都会保存到该目录下的一个plist文件中，这就是所谓的写道plist中！
+
+②是否会被iTunes同步
+
+是
+
+7、tmp
+
+①存放内容
+
+各种临时文件，保存应用再次启动时不需要的文件。而且，当应用不再需要这些文件时应该主动将其删除，因为该目录下的东西随时有可能被系统清理掉，目前已知的一种可能清理的原因是系统磁盘存储空间不足的时候。
+
+②是否会被iTunes同步
+
+否
+
+手机上有两个很重要的路径：Application.streamingAssetsPath和Application.persistentDataPath。
+
+1、Application.streamingAssetsPath
+
+它是一个只读路径，游戏运行中程序只能对他进行读取,并无法写入。在unity的Assets/目录下起一个叫StreamingAssets的文件夹即可。一般可以把一些预制的2进制文件放在里面，我个人觉得如果是assetbundle最好不要放在里面，因为用WWW把本地的assetbundle读取后，会将解压后的资源放在cache里面，但是由于StreamingAssets文件夹是只读文件，所以你没法删除它，那么应用程序就会更加占用空间。举个例子，就好比你在电脑上解压一个.zip文件，那么其实你只需要使用解压后的文件。但是原始用.zip文件如果还保留在文件夹西安，那么容量就更大了。
+
+如果你坚持要把assetbundle放在streamingAssets文件夹下，我觉得一定要做好加密工作。因为把你的.ipa或者.apk下载后都不用破解资源直接可以把你的assetbundle原封不动的取出来。
+
+2、Application.persistentDataPath
+
+它是一个可以读、写的路径，在IOS上就是应用程序的沙盒。而在Android可以使程序的沙盒，也可以是sdcard，在打包Android的时候，ProjectSetting页面有一个选项Write Access，可以设置他的路径是沙盒还是sdcard。
+
+如果你在这个路径下写入文件后，IOS上可以通过同步推一类的助手直接取出来写入文件。在Android上如果你设置保存在沙盒中，那么就必须root才能取出文件。不过建议你最好设置写入sdcard里，这样就不用root也可以在电脑上访问文件。假设安装的手机没有sdcard，或者sdcard被锁住（有的Android手机插拔USB会锁一下sdcard），那么他会自动指向你的应用程序沙盒路径。
+
+我觉得它的最大缺点就是只能运行时才能写入或者读取，假设你想在打包前写入一些二进制文件在persistentDataPath里面是不行的。假设你要写Android的交互插件，那么.java类中是无法访问unity里面的资源的。但是有一个办法，如下代码，图片放在Resources文件夹下，比如在Awake（）方法中把二进制文件拷贝在persistentDataPath下面，这样C# Java两边就都可以访问它了。
+
+```java
+string imagePath=Application.persistentDataPath+"/image.png";  
+  
+if(!System.IO.File.Exists(imagePath))  
+{  
+    Texture2D tex=Resources.Load("image") as Texture2D;  
+    System.IO.File.WriteAllBytes(imagePath,tex.EncodeToPNG());  
+}  
+```
+
+streamingAssetsPath目录下的资源也可以通过这种方法拷贝到sdcard中。

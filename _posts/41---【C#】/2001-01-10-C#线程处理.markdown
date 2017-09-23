@@ -1,0 +1,140 @@
+---
+layout: post
+title:  "[C#]C#线程处理"
+date:   2001-01-10 10:10:10
+categories: 41---【C#】
+comments: true
+---
+
+线程处理使 C# 程序能够执行并发处理，以便您可以同时执行多个操作。例如，您可以使用线程处理来监视用户输入，执行后台任务，以及处理并发输入流。System.Threading 命名空间提供支持多线程编程的类和接口，使您可以轻松地执行创建和启动新线程，同步多个线程，挂起线程以及中止线程等任务。
+
+若要在 C# 代码中合并线程处理，只需创建一个将在主线程外执行的函数，并让一个新的 Thread 对象指向该函数即可。下面的代码示例在 C# 应用程序中创建一个新线程：
+
+```java
+System.Threading.Thread newThread;  
+newThread = new System.Threading.Thread(anObject.AMethod);  
+
+```
+
+下面的代码示例在 C# 应用程序中启动一个新线程：
+```java
+newThread.Start();  
+```
+
+#### ①线程同步
+lock 关键字可以用来确保代码块完成运行，而不会被其他线程中断。这是通过在代码块运行期间为给定对象获取互斥锁来实现的。
+
+lock 语句以关键字 lock 开头，它有一个作为参数的对象，在该参数的后面还有一个一次只能由一个线程执行的代码块。
+
+例如：
+```java
+public void Function()  
+{  
+    System.Object lockThis = new System.Object();  
+    lock(lockThis)  
+    {  
+        // Access thread-sensitive resources.  
+    }  
+}  
+```
+
+使用锁或监视器对于防止同时执行区分线程的代码块很有用，但是这些构造不允许一个线程向另一个线程传达事件。这需要“同步事件”，它是有两个状态（终止和非终止）的对象，可以用来激活和挂起线程。让线程等待非终止的同步事件可以将线程挂起，将事件状态更改为终止可以将线程激活。如果线程试图等待已经终止的事件，则线程将继续执行，而不会延迟。
+
+同步事件有两种：AutoResetEvent 和 ManualResetEvent。它们之间唯一的不同在于，无论何时，只要 AutoResetEvent 激活线程，它的状态将自动从终止变为非终止。相反，ManualResetEvent 允许它的终止状态激活任意多个线程，只有当它的 Reset 方法被调用时才还原到非终止状态。
+
+可以通过调用一种等待方法，如 WaitOne、WaitAny 或 WaitAll，让线程等待事件。System.Threading.WaitHandle.WaitOne 使线程一直等待，直到单个事件变为终止状态；System.Threading.WaitHandle.WaitAny 阻止线程，直到一个或多个指示的事件变为终止状态；
+
+System.Threading.WaitHandle.WaitAll 阻止线程，直到所有指示的事件都变为终止状态。当调用事件的 Set 方法时，事件将变为终止状态。
+
+在下面的示例中，创建了一个线程，并由 Main 函数启动该线程。新线程使用 WaitOne 方法等待一个事件。在该事件被执行 Main 函数的主线程终止之前，该线程一直处于挂起状态。一旦该事件终止，辅助线程将返回。在本示例中，因为事件只用于一个线程的激活，所以使用 AutoResetEvent 或 ManualResetEvent 类都可以。
+```java
+using System;  
+using System.Threading;  
+  
+class ThreadingExample  
+{  
+    static AutoResetEvent autoEvent;  
+  
+    static void DoWork()  
+    {  
+        Console.WriteLine("   worker thread started, now waiting on event...");  
+        autoEvent.WaitOne();  
+        Console.WriteLine("   worker thread reactivated, now exiting...");  
+    }  
+  
+    static void Main()  
+    {  
+        autoEvent = new AutoResetEvent(false);  
+  
+        Console.WriteLine("main thread starting worker thread...");  
+        Thread t = new Thread(DoWork);  
+        t.Start();  
+  
+        Console.WriteLine("main thrad sleeping for 1 second...");  
+        Thread.Sleep(1000);  
+  
+        Console.WriteLine("main thread signaling worker thread...");  
+        autoEvent.Set();  
+    }  
+}  
+```
+
+#### ②创建和终止线程
+此示例演示如何创建辅助线程，并用它与主线程并行执行处理。还将演示如何使一个线程等待另一个线程，并正确地终止线程。有关多线程处理的背景信息，请参见托管线程处理和使用线程处理（C# 编程指南）。
+
+该示例创建一个名为 Worker 的类，该类包含辅助线程将执行的方法 DoWork。这实际上是辅助线程的 Main 函数。辅助线程将通过调用此方法来开始执行，并在此方法返回时自动终止。
+
+DoWork 方法如下所示：
+```java
+using System;  
+using System.Threading;  
+  
+public class Worker  
+{  
+    // This method will be called when the thread is started.  
+    public void DoWork()  
+    {  
+        while (!_shouldStop)  
+        {  
+            Console.WriteLine("worker thread: working...");  
+        }  
+        Console.WriteLine("worker thread: terminating gracefully.");  
+    }  
+    public void RequestStop()  
+    {  
+        _shouldStop = true;  
+    }  
+    // Volatile is used as hint to the compiler that this data  
+    // member will be accessed by multiple threads.  
+    private volatile bool _shouldStop;  
+}  
+  
+public class WorkerThreadExample  
+{  
+    static void Main()  
+    {  
+        // Create the thread object. This does not start the thread.  
+        Worker workerObject = new Worker();  
+        Thread workerThread = new Thread(workerObject.DoWork);  
+  
+        // Start the worker thread.  
+        workerThread.Start();  
+        Console.WriteLine("main thread: Starting worker thread...");  
+  
+        // Loop until worker thread activates.  
+        while (!workerThread.IsAlive);  
+  
+        // Put the main thread to sleep for 1 millisecond to  
+        // allow the worker thread to do some work:  
+        Thread.Sleep(1);  
+  
+        // Request that the worker thread stop itself:  
+        workerObject.RequestStop();  
+  
+        // Use the Join method to block the current thread   
+        // until the object's thread terminates.  
+        workerThread.Join();  
+        Console.WriteLine("main thread: Worker thread has terminated.");  
+    }  
+}  
+```

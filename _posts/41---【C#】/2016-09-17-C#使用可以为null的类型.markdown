@@ -1,0 +1,47 @@
+---
+layout: post
+title:  "[C#]C#使用可以为null的类型"
+date:   2016-09-17 01:15:10
+categories: 41---【C#】
+comments: true
+---
+
+```java
+using System;  
+using System.Collections.Generic;  
+using System.Linq;  
+using System.Text;  
+  
+class program  
+{  
+    static void main(string[] args)  
+    {  
+        int? a = null;  
+        console.writeline("a = {0}", a);  
+        a = 0;  
+        console.writeline("a = {0}", a);  
+    }  
+}  
+```
+
+```java
+using System;  
+using System.Collections.Generic;  
+using System.Linq;  
+using System.Text;  
+  
+class Program  
+{  
+    static void Main(string[] args)  
+    {  
+        int? i = null;  
+        if (!i.HasValue)    // 若 i 包含一个真正的值，则 i.HasValue 为true  
+        {  
+            i = 99;  
+        }  
+        Console.WriteLine(i.Value); // i 的值  
+    }  
+}  
+// i.HasValue 比 i != null 走了不少冤枉路，i.Value 也比 i 更麻烦  
+// 但是当使用更加复杂的值类型（struct）来声明可空类型时， .HasValue 和 .Value 就有了优势  
+```

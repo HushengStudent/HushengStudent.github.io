@@ -1,0 +1,53 @@
+---
+layout: post
+title:  "[ulua]原理介绍"
+date:   2017-09-15 23:55:10
+categories: 09---【Unity-热更新】
+comments: true
+---
+
+uLua = Lua + LuaJit(解析器、解释器) +LuaInterface。
+
+LuaInterface is a library for integration between the Lua language and Microsoft .NET platform's Common Language Runtime (CLR). 
+
+Lua scripts can use it to instantiate CLR objects, access properties, call methods, and even handle events with Lua functions.
+
+C#调用Lua需要使用：LuaInterface.dll和lua51.dll、Lua调用C#的类需要使用：LuaInterface.dll和luanet.dll。
+
+代码静态注册到lua代码中 ；
+
+整个游戏的Lua代码应该运行在一个LuaState之上，运行在同一LuaState的Lua代码才能互相调用。减少代码执行的语言环境切换。
+
+1、如果一个C#方法要被Lua调用，则首先要将其注册到Lua虚拟机中（LuaState.RegisterFunction）。之后，在Lua中就可以通过注册的名称来调用这个C#方法。
+
+2、如果C#要调用Lua中的函数，则
+
+①首先要在Lua虚拟机中加载该函数（LuaState.DoFile）。
+
+②拿到目标函数（LuaState.GetFunction）。
+
+③执行目标函数（LuaFunction.Call）。
+
+SimpleFramework执行流程：
+
+1、C#执行Lua脚本，Lua.DoFile()；
+
+2、C#注册方法到Lua，Lua.RegisterFunction()；
+
+3、Lua执行C#类，引入Luanet；
+
+去反射的步骤：
+
+1、创建一个自定义的类，比如视频中的Demo类，里面添加了1个静态方法Add。
+
+2、打开uLua/Editor/BindLua.cs文件，找到类似_GT(type)列表，添加_GT(Demo)条目。
+
+3、通过单击菜单Lua/Gen Lua Wrap Files，生成LuaWrap文件，所在位置在uLua/Source/LuaWrap/DemoWrap.cs。
+
+LuaState：反射调用，requere的代码被封装到LuaState里面。不需要再引入。
+
+LuaScriptMgr：封装LuaState；去掉反射，速度更快；wrap文件实现；单例；加载c盘Lua代码。
+
+ulua/core属于luainterface。
+
+scripts/source属于封装luainterface。

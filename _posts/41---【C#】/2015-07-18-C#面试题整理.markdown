@@ -1,0 +1,271 @@
+---
+layout: post
+title:  "[C#]C#面试题整理"
+date:   2015-07-18 20:15:10
+categories: 41---【C#】 44---【面试题】
+comments: true
+---
+
+1、C#支持哪几种预定义的值类型？
+
+a：
+
+值类型和引用类型不同，在引用类型中，赋值时不创建副本。值类型通常不创建在垃圾回收堆中，而是创建在方法的帧上。
+
+C#中值类型：整型、浮点类型、字符型、bool型和decimal型。
+
+2、C#支持哪几种预定义的引用类型？
+
+a：
+
+Object类型和String类型。
+
+3、如何解决拆装箱引发的性能问题？
+
+a：
+
+拆箱操作将判断被拆箱的对象类型和将要被复制的值类型引用是否一致。
+
+4、判断值类型和引用类型的方法？
+
+a：
+
+①值类型和引用类型赋值的区别：值类型会创建一个值新对象。而引用类型是共享同一内存地址。
+
+②继承结构的区别：引用类型一般都有继承性。
+
+③内存分配的区别：值类型分配在栈中，效率较高。引用类型分配在托管堆上。
+
+5、如何理解C#中变量的作用域？
+
+a：
+
+变量的作用域是指可以访问该变量的代码区域。
+
+6、传递参数的方法？
+
+a：
+
+C#中传递参数有4种方法：传值、传址、输出参数和数组参数。
+
+传值：不含修饰符。
+
+传址：ref关键字。
+
+输出参数：out关键字。
+
+数组参数：params关键字。
+
+7、C#中的预处理指令？
+
+a：
+
+C#预处理指令是在编译时调用的。
+
+8、如何理解C#中的指针？
+
+a：
+
+不继承Object。
+
+9、StringBuilder与String有哪些区别？
+
+a：
+
+①String是引用类型，在堆上分配内存。
+
+②String对象一旦生成不可改变。
+
+③可使用（==和！=）来比较String对象的值。
+
+④StringBuilder对象是动态对象。
+
+10、C#中String和string的区别是什么？
+
+a：
+
+string是String的别名，两者没有任何区别。
+
+11、如何在Byte[]和String之间进行转换？
+
+a：
+
+System.Text.Encoding类型提供了大部分常见的编码算法支持，用以进行字符串和字节数组之间的转换。
+
+12、Array与ArrayList的区别与相互转换？
+
+a：
+
+主要差别是：命名空间、变量声明、下限等等。
+
+相互转换：ArrayList转换到Array使用ArrayList内置的ToArray()方法就可。
+
+13、C#中checked和unchecked的作用是什么？
+
+a：
+
+checked关键字用于开启整型算术运算和显示转换的溢出检查。
+
+unchecked关键字用于取消整型算术运算和转换的溢出检查。
+
+14、C#中is运算符与as运算符有什么作用？
+
+a：
+
+is运算符：检查对象是否与给定类型兼容。
+
+as运算符：在兼容的引用类型之间执行转换。
+
+15、类和结构有什么区别？
+
+a：
+
+在C#中。类是功能最强大的数据结构，类定义了数据的类型和行为。
+
+结构是值类型，而类是引用类型，结构和类的内部结构不同。
+
+16、C#中的虚方法？
+
+a：
+
+虚函数可以在派生类中被重写。
+```java
+using System;  
+using System.Collections.Generic;  
+using System.Linq;  
+using System.Text;  
+using System.Threading.Tasks;  
+  
+namespace ConsoleApplication3  
+{  
+    class Program  
+    {  
+        static void Main(string[] args)  
+        {  
+            Myclass m = new Myclass();  
+            Console.WriteLine(m.print());  
+        }  
+    }  
+}  
+  
+public class contact  
+{  
+    public virtual string print()  
+    {  
+        return("这是虚方法");          
+    }  
+}  
+  
+public class Myclass : contact  
+{  
+    public override string print()  
+    {  
+        return ("这是新的方法");  
+    }  
+}  
+```
+
+17、C#中的密封类和密封方法？
+
+a：
+
+密封类使用sealed关键字进行修饰，他不能作为其他类的基类，没有派生类。
+
+18、C#中静态类构造方法的特点？
+
+a：
+
+主要特点：
+
+①只允许有一个无参的静态构造方法在一个类中存在。
+
+②不会被继承。
+
+③所有构造方法中，最先被执行的是静态的构造方法。
+
+19、派生类中的构造方法？
+
+a：
+
+base表示调用基类的构造函数；this表示调用本类的构造函数。
+
+20、接口及接口继承？
+
+a：
+
+接口是面向对象编程多态最最主要的体现方面。
+
+21、委托？
+
+a：
+
+C#中的委托类都继承自System.Delegate类型。委托是一种可用于封装命名或匿名方法的引用类型。
+
+22、C#中被委托的方法必须是静态的吗？
+
+a：
+
+委托可以绑定静态方法，也可以绑定实例方法。
+
+23、委托实例：
+```java
+using System;  
+using System.Collections.Generic;  
+using System.Text;  
+  
+namespace Delegate {  
+     //定义委托，它定义了可以代表的方法的类型  
+     public delegate void GreetingDelegate(string name);  
+        class Program {  
+  
+           private static void EnglishGreeting(string name) {  
+               Console.WriteLine("Morning, " + name);  
+           }  
+  
+           private static void ChineseGreeting(string name) {  
+               Console.WriteLine("早上好, " + name);  
+           }  
+  
+           //注意此方法，它接受一个GreetingDelegate类型的方法作为参数  
+           private static void GreetPeople(string name, GreetingDelegate MakeGreeting) {  
+               MakeGreeting(name);  
+            }  
+  
+           static void Main(string[] args) {  
+               GreetPeople("a", EnglishGreeting);  
+               GreetPeople("b", ChineseGreeting);  
+               Console.ReadKey();  
+           }  
+        }  
+    }  
+```
+
+24、如何理解C#中的死锁？
+
+a：
+
+两个进程互相争夺资源，产生死锁。
+
+25、C#中的堆？
+
+a：
+
+由下往上分配，所以已用空间在自由空间的下面。
+
+26、C#中的堆栈？
+
+a：
+
+C#中，堆栈实际上是自上向下进行填充。
+
+27、堆和栈的区别？
+
+a：
+
+栈的内存管理可以通过操作系统来完成。堆的管理需要通过GC(垃圾回收器)来完成。
+
+28、C#中GC？
+
+a：
+
+GC是指垃圾回收。
