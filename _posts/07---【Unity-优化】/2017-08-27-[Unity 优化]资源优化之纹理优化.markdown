@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity优化]资源优化之纹理优化"
+title:  "[Unity 优化]资源优化之纹理优化"
 date:   2017-08-27 00:16:10
 categories: 07---【Unity-优化】
 comments: true
