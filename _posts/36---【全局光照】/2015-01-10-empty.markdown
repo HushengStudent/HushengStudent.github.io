@@ -1,0 +1,8 @@
+---
+layout: post
+title:  "empty"
+date:   2015-01-10 10:10:10
+categories: 36---【全局光照】
+comments: true
+---
+empty
