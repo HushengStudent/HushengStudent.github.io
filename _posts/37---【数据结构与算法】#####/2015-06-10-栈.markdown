@@ -1,0 +1,225 @@
+---
+layout: post
+title:  "[数据结构]栈"
+date:   2015-06-10 14:45:10
+categories: 37---【数据结构与算法】#####
+comments: true
+---
+#### ①栈的定义及实现：
+栈是一种特殊的线性表、栈仅能在线性表的一端进行操作。
+
+栈顶(Top)：允许操作的一端。
+
+栈底(Bottom)：不允许操作的一端。
+
+#### ②栈的性质：
+性质：后进先出(LIFO)
+
+#### ③栈的操作：
+栈的一些常用操作：创建栈、销毁栈、清空栈、进栈、出栈、获取栈顶元素、获取栈的大小。
+
+栈是一种特殊的线性表。
+
+栈只允许在线性表的一端进行操作。
+
+栈通常有两种实现方式：顺序结构实现、链式结构实现。
+
+下面通过一个实例进行说明：
+
+stack.h:
+
+```c
+
+#ifndef Stack_H  
+#define Stack_H  
+  
+typedef int Item;  
+typedef struct node * PNode;  
+  
+typedef struct node  
+{  
+    Item data;  
+    PNode down;  
+}Node;  
+  
+typedef struct stack  
+{  
+    PNode top;  
+    int size;  
+}Stack;  
+  
+Stack *InitStack();  
+  
+void DestroyStack(Stack *ps);  
+  
+void ClearStack(Stack *ps);  
+  
+int IsEmpty(Stack *ps);  
+  
+int GetSize(Stack *ps);  
+  
+PNode GetTop(Stack *ps, Item *pitem);  
+  
+PNode Push(Stack *ps, Item item);  
+  
+PNode Pop(Stack *ps, Item *pitem);  
+  
+void StackTraverse(Stack *ps, void(*visit)());  
+  
+#endif  
+```
+stack.c:
+
+```c
+
+#include"Stack.h"  
+#include<malloc.h>  
+#include<stdlib.h>  
+  
+Stack *InitStack()  
+{  
+    Stack *ps = (Stack *)malloc(sizeof(Stack));  
+    if (ps != NULL)  
+    {  
+        ps->top = NULL;  
+        ps->size = 0;  
+    }  
+    return ps;  
+}  
+  
+int IsEmpty(Stack *ps)  
+{  
+    if (ps->top == NULL && ps->size == 0)  
+        return 1;  
+    else  
+        return 0;  
+}  
+  
+int GetSize(Stack *ps)  
+{  
+    return ps->size;  
+}  
+  
+PNode Push(Stack *ps, Item item)  
+{  
+    PNode pnode = (PNode)malloc(sizeof(Node));  
+    if (pnode != NULL)  
+    {  
+        pnode->data = item;  
+        pnode->down = GetTop(ps, NULL);  
+        ps->size++;  
+        ps->top = pnode;  
+    }  
+    return pnode;  
+}  
+  
+PNode GetTop(Stack *ps, Item *pitem)  
+{  
+    if (IsEmpty(ps) != 1 && pitem != NULL)  
+    {  
+        *pitem = ps->top->data;  
+    }  
+    return ps->top;  
+}  
+  
+PNode Pop(Stack *ps, Item *pitem)  
+{  
+    PNode p = ps->top;  
+    if (IsEmpty(ps) != 1 && p != NULL)  
+    {  
+        if (pitem != NULL)  
+            *pitem = p->data;  
+        ps->size--;  
+        ps->top = ps->top->down;  
+        free(p);  
+    }  
+    return ps->top;  
+}  
+  
+void DestroyStack(Stack *ps)  
+{  
+    if (IsEmpty(ps) != 1)  
+        ClearStack(ps);  
+    free(ps);  
+}  
+  
+void ClearStack(Stack *ps)  
+{  
+    while (IsEmpty(ps) != 1)  
+    {  
+        Pop(ps, NULL);  
+    }  
+}  
+  
+void StackTraverse(Stack *ps, void(*visit)())  
+{  
+    PNode p = ps->top;  
+    int i = ps->size;  
+    while (i--)  
+    {  
+        visit(p->data);  
+        p = p->down;  
+    }  
+}  
+```
+test.c:
+
+```c
+
+#include"Stack.h"  
+#include<stdio.h>  
+  
+void print(Item i)  
+{  
+    printf("该节点元素为%d\n", i);  
+}  
+  
+main()  
+{  
+    Stack *ps = InitStack();  
+    int i, item;  
+  
+    printf("0-9依次入栈并输出如下：\n");  
+    for (i = 0; i < 10; i++)  
+    {  
+        Push(ps, i);  
+        GetTop(ps, &item);  
+        printf("%d ", item);  
+    }  
+  
+    printf("\n从栈顶到栈顶遍历并对每个元素执行print函数：\n");  
+    StackTraverse(ps, print);  
+  
+    printf("栈中元素依次出栈并输出如下：\n");  
+    for (i = 0; i < 10; i++)  
+    {  
+        Pop(ps, &item);  
+        printf("%d ", item);  
+    }  
+  
+    ClearStack(ps);  
+    if (IsEmpty(ps))  
+        printf("\n将栈置空成功\n");  
+    DestroyStack(ps);  
+    printf("栈已被销毁\n");  
+  
+}  
+```
+
+#### ④函数调用时的栈：
+程序中的"函数调用栈"是栈数据结构的一种应用。
+
+函数调用栈一般是从高地址向低地址增长的、栈底为内存的高地址处、栈顶为内存的低地址处。
+
+函数调用栈中存储的数据为活动记录。
+
+#### ⑤程序中的栈：
+程序中的栈空间可看做一个顺序栈的应用。
+
+栈保存了一个函数调用所需的维护信息，函数参数、函数返回地址、局部变量、函数调用上下文。
+
+程序栈空间在本质上是一种顺序栈。
+
+程序栈空间的访问是通过函数调用进行的。
+
+程序栈空间仍然遵从后进先出的规则。
