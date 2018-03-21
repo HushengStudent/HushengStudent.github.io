@@ -1,0 +1,379 @@
+---
+layout: post
+title:  "[数据结构]树"
+date:   2015-06-13 22:45:10
+categories: 数据结构与算法
+comments: true
+---
+
+#### ①树的定义：
+树是一种非线性的数据结构：
+
+树是由n(n≥0)个结点组成的有限集合，如果n = 0，称为空树。
+
+如果n> 0，则：
+
+有一个特定的称之为根(root)的结点，它只有直接后继，但没有直接前驱。除根以外的其它结点划分为m(m≥0)0)个互不相交的有限集合T0,T1,…,Tm-1，每个集合又是一棵树，并且称之为根的子树(subTree)。
+
+树家族中的概念：
+
+树的结点包含一个数据及若干指向子树的分支
+
+结点拥有的子树数称为结点的度：度为0的结点称为叶结点，度不为0的结点称为分支结点，树的度定义为所有结点中的度的最大值。
+
+如果树中结点的各子树从左向右是有次序的，子树间不能互换位置，则称该树为有序树，否则为无序树。
+
+#### ②树的操作：
+树的一些常用操作：创建树、销毁树、清空树、插入结点、删除结点、获取结点、获取根结点、获取树的结点数、获取树的高度、获取树的度。
+![图片](http://owk5gjdrg.bkt.clouddn.com/0025%E6%A0%91.png)
+
+在一些情况下，线性结构可看作特殊的树结构。
+
+#### ③二叉树的定义：
+二叉树是由 n ( n ≥0 ) 个结点组成的有限集合，该集合或者为空，或者是由一个根结点加上两棵分别称为左子树和右子树的、互不相交的二叉树组成。
+
+特殊的二叉树：
+
+满二叉树 (Full Binary Tree)：
+如果二叉树中所有分支结点的度数都为2，且叶子结点都在同一层次上，则称这类二叉树为满二叉树。
+
+完全二叉树 (Complete Binary Tree)：
+如果一棵具有n个结点的高度为k的二叉树，它的每一个结点都与高度为k的满二叉树中编号为1—n的结点一一对应，则称这棵二叉树为完全二叉树。从上到下从左到右编号。
+
+#### ④创建二叉树：
+```java
+typedef int Item;  
+typedef struct node  
+{  
+    struct node * lchild;  
+    struct node * rchild;  
+    Item data;  
+}BiTNode,*BiTree;  
+  
+/*构造一棵新的二叉树*/  
+BiTree InitBiTree(BiTNode *root);  
+  
+/*生成节点*/  
+BiTNode *MakeNode(Item item,BiTNode *lchild,BiTNode *rchild);  
+/*释放节点*/  
+void FreeNode(BiTNode *pnode);  
+  
+/*清空一棵二叉树*/  
+void ClearBiTree(BiTree tree);  
+  
+/*销毁一棵二叉树*/  
+void DestroyBiTree(BiTree tree);  
+  
+/*判定是否为空*/  
+IsEmpty(BiTree tree);  
+  
+/*返回树的深度*/  
+GetDepth(BiTree tree);  
+  
+/*返回根*/  
+BiTree GetRoot(BiTree tree);  
+  
+/*返回节点值*/  
+Item GetItem(BiTNode *pnode);  
+  
+/*设置节点值*/  
+void SetItem(BiTNode *pnode,Item item);  
+  
+/*设置左子树*/  
+BiTree SetLChild(BiTree parent,BiTree lchild);  
+  
+/*设置右子树*/  
+BiTree SetRChild(BiTree parent,BiTree rchild);  
+  
+/*返回左子树*/  
+BiTree GetLChild(BiTree tree);  
+  
+/*返回右子树*/  
+BiTree GetRChild(BiTree tree);  
+  
+/*插入新子树*/  
+BiTree InsertChild(BiTree parent,int lr,BiTree child);  
+  
+/*删除子树*/  
+void DeleteChild(BiTree parent,int lr);  
+  
+/*先序遍历二叉树*/  
+PreOrderTraverse(BiTree tree,void(*visit)());  
+  
+/*中序遍历二叉树*/  
+InOrderTraverse(BiTree tree,void(*visit)());  
+  
+/*后序遍历二叉树*/  
+PostOrderTraverse(BiTree tree,void(*visit)());  
+```
+```java
+#include"BiTree.h"  
+#include<malloc.h>  
+#include<stdlib.h>  
+  
+/*构造一棵新的二叉树*/  
+BiTree InitBiTree(BiTNode *root)  
+{  
+    BiTree tree = root;  
+    return tree;  
+}  
+  
+/*生成节点*/  
+BiTNode *MakeNode(Item item,BiTNode *lchild,BiTNode *rchild)  
+{  
+    BiTNode * pnode = (BiTNode *)malloc(sizeof(BiTNode));  
+    if(pnode)  
+    {  
+        pnode->data = item;  
+        pnode->lchild = lchild;  
+        pnode->rchild = rchild;  
+    }  
+    return pnode;     
+}  
+  
+/*释放节点*/  
+void FreeNode(BiTNode *pnode)  
+{  
+    if(pnode!=NULL)  
+        free(pnode);  
+}  
+  
+/*清空一棵二叉树*/  
+void ClearBiTree(BiTree tree)  
+{  
+    BiTNode * pnode = tree;  
+    if(pnode->lchild!=NULL)  
+        ClearBiTree(pnode->lchild);  
+  
+    if(pnode->rchild!=NULL)  
+        ClearBiTree(pnode->rchild);  
+  
+    FreeNode(pnode);  
+}  
+  
+/*销毁一棵二叉树*/  
+void DestroyBiTree(BiTree tree)  
+{  
+    if(tree)  
+        ClearBiTree(tree);    
+}  
+  
+/*判定是否为空*/  
+IsEmpty(BiTree tree)  
+{  
+    if(tree==NULL)  
+        return 0;  
+    else  
+        return 1;  
+}  
+  
+/*返回树的深度*/  
+int GetDepth(BiTree tree)  
+{  
+    int cd,ld,rd;  
+    cd = ld = rd = 0;  
+    if(tree)  
+    {  
+        ld = GetDepth(tree->lchild);  
+        rd = GetDepth(tree->rchild);  
+        cd = (ld > rd ? ld : rd);  
+        return cd+1;  
+    }  
+    else  
+        return 0;  
+}  
+  
+/*返回根*/  
+BiTree GetRoot(BiTree tree)  
+{  
+    return tree;  
+}  
+  
+/*返回节点值*/  
+Item GetItem(BiTNode *pnode)  
+{  
+    return pnode->data;  
+}  
+  
+/*设置节点值*/  
+void SetItem(BiTNode *pnode,Item item)  
+{  
+    pnode->data = item;  
+}  
+  
+/*设置左子树*/  
+BiTree SetLChild(BiTree parent,BiTree lchild)  
+{  
+    parent->lchild = lchild;  
+    return lchild;  
+}  
+  
+/*设置右子树*/  
+BiTree SetRChild(BiTree parent,BiTree rchild)  
+{  
+    parent->rchild = rchild;  
+    return rchild;  
+}  
+  
+/*返回左子树*/  
+BiTree GetLChild(BiTree tree)  
+{  
+    if(tree)  
+        return tree->lchild;  
+    return NULL;  
+}  
+  
+/*返回右子树*/  
+BiTree GetRChild(BiTree tree)  
+{  
+    if(tree)  
+        return tree->rchild;  
+    return NULL;  
+}  
+  
+/*插入新子树*/  
+BiTree InsertChild(BiTree parent,int lr,BiTree child)  
+{  
+    if(parent)  
+    {  
+        if( lr == 0 && parent->lchild == NULL)  
+        {  
+            parent->lchild = child;  
+            return child;  
+        }     
+        if( lr == 1 && parent->rchild == NULL)  
+        {  
+            parent->rchild = child;  
+            return child;  
+        }     
+    }  
+    return NULL;      
+}  
+  
+/*删除子树*/  
+void DeleteChild(BiTree parent,int lr)  
+{  
+    if(parent)  
+    {  
+        if( lr == 0 && parent->lchild != NULL)  
+        {  
+            parent->lchild = NULL;  
+            FreeNode(parent->lchild);  
+        }     
+        if( lr == 1 && parent->rchild != NULL)  
+        {  
+            parent->rchild = NULL;  
+            FreeNode(parent->rchild);  
+        }     
+    }  
+}  
+  
+/*先序遍历二叉树*/  
+PreOrderTraverse(BiTree tree,void(*visit)())  
+{  
+    BiTNode * pnode = tree;  
+    if(pnode)  
+    {  
+        visit(pnode->data);  
+        PreOrderTraverse(pnode->lchild,visit);  
+        PreOrderTraverse(pnode->rchild,visit);  
+    }  
+}  
+  
+/*中序遍历二叉树*/  
+InOrderTraverse(BiTree tree,void(*visit)())  
+{  
+    BiTNode * pnode = tree;  
+    if(pnode)  
+    {  
+        InOrderTraverse(pnode->lchild,visit);  
+        visit(pnode->data);  
+        InOrderTraverse(pnode->rchild,visit);  
+    }  
+}  
+  
+/*后序遍历二叉树*/  
+PostOrderTraverse(BiTree tree,void(*visit)())  
+{  
+    BiTNode * pnode = tree;  
+    if(pnode)  
+    {  
+        PostOrderTraverse(pnode->lchild,visit);        
+        PostOrderTraverse(pnode->rchild,visit);  
+        visit(pnode->data);  
+    }  
+}  
+
+```
+```java
+#include"BiTree.h"  
+#include<stdio.h>  
+void print(Item item)  
+{  
+    printf("%d ",item);  
+}  
+main()  
+{     
+    BiTNode * n1 = MakeNode(10,NULL,NULL);  
+    BiTNode * n2 = MakeNode(20,NULL,NULL);  
+    BiTNode * n3 = MakeNode(30,n1,n2);  
+    BiTNode * n4 = MakeNode(40,NULL,NULL);  
+    BiTNode * n5 = MakeNode(50,NULL,NULL);  
+    BiTNode * n6 = MakeNode(60,n4,n5);  
+    BiTNode * n7 = MakeNode(70,NULL,NULL);  
+  
+    BiTree tree = InitBiTree(n7);  
+    SetLChild(tree,n3);  
+    SetRChild(tree,n6);  
+  
+    printf("树的深度为：%d",GetDepth(tree));  
+      
+    printf("\n先序遍历如下：");  
+    PreOrderTraverse(tree,print);  
+  
+    printf("\n中序遍历如下：");  
+    InOrderTraverse(tree,print);  
+  
+    printf("\n后序遍历如下：");  
+    PostOrderTraverse(tree,print);  
+  
+    DeleteChild(tree,1);  
+    printf("\n后序遍历如下：");  
+    PostOrderTraverse(tree,print);  
+  
+    DestroyBiTree(tree);  
+    if(IsEmpty(tree))  
+     printf("\n二叉树为空，销毁完毕\n");  
+}  
+```
+#### ⑤线索化二叉树：
+线索化二叉树指的是将二叉树中的结点进行逻辑意义上的“重排列”，使其可以线性的方式访问每一个结点。
+
+二叉树线索化之后每个结点都有一个线性下标，通过这个下标可以快速访问结点，而不需要遍历二叉树。
+
+线索化方法1：利用结点中的空指针域，使其指向后继结点。
+
+线索化方法2：利用线性表保存二叉树的遍历顺序。
+
+#### ⑥霍夫曼树：
+霍夫曼树：
+
+1、给定n个数值{ v1, v2, …, vn }。
+
+2、根据这n个数值构造二叉树集合F
+
+F = { T1, T2, …, Tn }
+
+Ti的数据域为vi，左右子树为空
+
+3、在F中选取两棵根结点的值最小的树作为左右子树构造一棵新的二叉树，这棵二叉树的根结点中的值为左右子树根结点中的值之和
+
+4、在F中删除这两棵子树，并将构造的新二叉树加入F中
+
+5、重复3和4，直到F中只剩下一个树为止。这棵树即霍夫曼树。
+
+霍夫曼树是一种特殊的二叉树。
+
+霍夫曼树应用于信息编码和数据压缩领域。
+
+霍夫曼树是现代压缩算法的基础。

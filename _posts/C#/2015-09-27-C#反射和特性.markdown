@@ -1,0 +1,233 @@
+---
+layout: post
+title:  "[C#]C#反射和特性"
+date:   2015-09-27 22:39:10
+categories: C#
+comments: true
+---
+
+1、Type类
+
+预定义类型(int long和string等)，BCL中的类型(Console,IEnumerable等)和程序员自定义类型（MyClass,MyDel等）。 每种类型都有自己的成员和特性。
+
+BCL声明了一个叫做Type的抽象类，它被设计用来包含类型的特性。使用这个类的对象能让我们获取程序使用的类型的信息。
+
+由于 Type是抽象类，因此不能利用它去实例化对象。关于Type的重要事项如下：
+
+对于程序中用到的每一个类型，CLR都会创建一个包含这个类型信息的Type类型的对象。
+
+程序中用到的每一个类型都会关联到独立的Type类的对象。
+
+不管创建的类型有多少个示例，只有一个Type对象会关联到所有这些实例。
+```java
+using System;  
+using System.Collections.Generic;  
+using System.Linq;  
+using System.Text;  
+using System.Threading.Tasks;  
+  
+  
+namespace _014_反射和特性 {  
+    class MyClass  
+    {  
+        private int id;  
+        private int age;  
+        public int number;  
+        public string Name { get; set; }  
+        public string Name2 { get; set; }  
+        public string Name3 { get; set; }  
+  
+        public void Test1() {  
+  
+        }  
+        public void Test2() {  
+  
+        }  
+    }  
+}  
+```
+```java
+using System;  
+using System.Collections.Generic;  
+using System.Linq;  
+using System.Reflection;  
+using System.Text;  
+using System.Threading.Tasks;  
+  
+namespace _014_反射和特性 {  
+    class Program {  
+        static void Main(string[] args) {  
+            //每一个类对应一个type对象，这个type对象存储了这个类 有哪些方法跟哪些数据 哪些成员  
+            //MyClass my = new MyClass();//一个类中的数据 是存储在对象中的， 但是type对象只存储类的成员  
+            //Type type = my.GetType();//通过对象获取这个对象所属类 的Type对象  
+            //Console.WriteLine(type.Name);//获取类的名字  
+            //Console.WriteLine(type.Namespace);//获取所在的命名空间  
+            //Console.WriteLine(type.Assembly);  
+            //FieldInfo[] array= type.GetFields();//只能获取public 字段  
+            //foreach (FieldInfo info in array)  
+            //{  
+            //    Console.Write(info.Name+" ");  
+            //}  
+            //PropertyInfo[] array2 = type.GetProperties();  
+            //foreach (PropertyInfo info in array2)  
+            //{  
+            //    Console.Write(info.Name+" ");  
+            //}  
+            //MethodInfo[] array3 = type.GetMethods();  
+            //foreach (MethodInfo info in array3)  
+            //{  
+            //    Console.Write(info.Name+" ");  
+            //}  
+            //通过type对象可以获取它对应的类的所有成员（public）  
+  
+            MyClass my = new MyClass();  
+            Assembly assem =  my.GetType().Assembly;//通过类的type对象获取它所在的程序集 Assembly  
+            Console.WriteLine(assem.FullName);  
+            Type[] types = assem.GetTypes();  
+            foreach (var type in types)  
+            {  
+                Console.WriteLine(type);  
+            }  
+            Console.ReadKey();  
+        }  
+    }  
+}  
+```
+
+2、特性
+
+特性(attribute)是一种允许我们向程序的程序集增加元数据的语言结构。它是用于保存程序结构信息的某种特殊类型的类。
+
+将应用了特性的程序结构叫做目标。
+
+设计用来获取和使用元数据的程序（对象浏览器）叫做特性的消费者。
+
+.NET预定了很多特性，我们也可以声明自定义特性。
+
+Obsolete特性：
+```java
+class Program{  
+    [Obsolete("Use method SuperPrintOut")]  //将特性应用到方法  
+    static void PrintOut(string str){  
+        Console.WriteLine(str);  
+    }  
+    [Obsolete("Use method SuperPrintOut",true)]//这个特性的第二个参数表示是是否应该标记为错误，而不仅仅是警告。  
+    static void PrintOut(string str){  
+        Console.WriteLine(str);  
+    }  
+    static void Main(string[] args){  
+        PrintOut("Start of Main");  
+    }  
+}  
+```
+
+Conditional特性：
+```java
+class Program{  
+    [Conditional("DoTrace")]   
+    static void TraceMessage(string str){  
+        Console.WriteLine(str);  
+    }  
+    static void Main(){  
+        TraceMessage("Start of Main");  
+        Console.WriteLine("Doing work in Main.")  
+        TraceMessage("End of Main");  
+    }  
+}  
+```
+
+调用者信息特性：
+
+DebuggerStepThrough特性：
+
+简单示例：
+```java
+using System;  
+using System.Collections.Generic;  
+using System.Linq;  
+using System.Net;  
+using System.Text;  
+using System.Threading.Tasks;  
+  
+  
+namespace _015_特性 {  
+    //1, 特性类的后缀以Attribute结尾   
+    //2, 需要继承自System.Attribute  
+    //3, 一般情况下声明为 sealed  
+    //4, 一般情况下 特性类用来表示目标结构的一些状态(定义一些字段或者属性， 一般不定义方法)  
+    [AttributeUsage(AttributeTargets.Class)]//表示该特性类可以应用到的程序结构有哪些  
+    sealed class MyTestAttribute : System.Attribute {  
+        public string Description { get; set; }  
+        public string VersionNumber { get; set; }  
+        public int ID { get; set; }  
+  
+        public MyTestAttribute(string des)  
+        {  
+            this.Description = des;  
+        }  
+    }  
+}  
+```
+
+```java
+#define IsTest //定义一个宏  
+  
+using System;  
+using System.Collections.Generic;  
+using System.Diagnostics;  
+using System.Linq;  
+using System.Runtime.CompilerServices;  
+using System.Text;  
+using System.Threading.Tasks;  
+  
+namespace _015_特性 {  
+    //通过制定属性的名字，给属性赋值，这种事命名参数  
+    [MyTest("简单的特性类",ID = 100)]//当我们使用特性的时候，后面的Attribute不需要写  
+    class Program {  
+        [Obsolete("这个方法过时了，使用NewMethod代替")] //obsolete特性用来表示一个方法被弃用了  
+        static void OldMethod()  
+        {  
+            Console.WriteLine("Oldmethod");  
+        }  
+  
+        static void NewMethod()  
+        {  
+              
+        }  
+        [Conditional("IsTest")]  
+        static void Test1() {  
+            Console.WriteLine("test1");  
+        }  
+        static void Test2() {  
+            Console.WriteLine("test2");  
+        }  
+  
+        [DebuggerStepThrough]//可以跳过debugger 的单步调试 不让进入该方法（当我们确定这个方法没有任何错误的时候，可以使用这个）  
+        static void PrintOut(string str,[CallerFilePath] string fileName="",[CallerLineNumber] int lineNumber=0,[CallerMemberName] string methodName ="")  
+        {  
+            Console.WriteLine(str);  
+            Console.WriteLine(fileName);  
+            Console.WriteLine(lineNumber);  
+            Console.WriteLine(methodName);  
+        }  
+        static void Main(string[] args) {  
+            //NewMethod();  
+            //OldMethod();  
+            //Console.ReadKey();  
+  
+            //Test1();  
+            //Test2();  
+            //Test1();  
+  
+            //PrintOut("123");  
+  
+            Type type = typeof(Program);//通过typeof+类名也可以获取type对象  
+            object[] array = type.GetCustomAttributes(false);  
+            MyTestAttribute mytest = array[0] as MyTestAttribute;  
+            Console.WriteLine(mytest.Description);  
+            Console.WriteLine(mytest.ID);  
+            Console.ReadKey();  
+        }  
+    }  
+}  
+```

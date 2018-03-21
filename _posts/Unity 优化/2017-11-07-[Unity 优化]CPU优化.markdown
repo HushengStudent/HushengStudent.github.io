@@ -1,0 +1,73 @@
+---
+layout: post
+title:  "[Unity 优化]CPU优化"
+date:   2017-11-07 00:01:00
+categories: Unity 优化
+comments: true
+---
+
+![图片](http://owk5gjdrg.bkt.clouddn.com/0074CPU%E4%BC%98%E5%8C%96.png)
+
+CPU优化主要是减少计算相关的内容，避免大量的频繁的计算相关操作，当然CUP优化也要与内存优化，渲染优化，发热耗电等权衡取舍。
+
+#### Rendering：
+
+1、DrawCall优化
+
+DrawCall是指CPU准备好数据，并把数据传递给GPU，使GPU完成一次绘制的过程。
+
+所以DrawCall压力在CPU而不是GPU。
+
+常见DrallCall优化方式：
+
+①打图集
+
+打图集，在UI制作时，避免图集的穿插。
+
+②动静分离
+
+UI有动画的与静止的进行分离。如不进行分离，则会导致整个mesh都会重建。
+
+③Static Batching 静态批处理
+
+④Dynamic Batching 动态批处理
+
+#### Scripts
+
+1、遍历
+
+for代替foreach，foreach会有内存开销，针对CPU优化，我认为问题最大的地方就是要缓存，把遍历到的结果缓存，而不是一次次的遍历。
+
+2、Unity API
+
+①Unity有一些API的使用需要注意节制，凡是，find，get之类的，就需要注意性能问题了。
+
+②脚本里面，空余的系统回调函数去掉，比如空的Update()；逻辑尽量不要写在Update()中。
+
+3、移除不必要的定时器。
+
+#### Physics
+
+1、碰撞
+
+碰撞体的个数要节制；使用简单的碰撞体，避免使用MeshCollider。
+
+2、面数
+
+DC<200,面数小于10w是Unity建议。
+
+3、动画
+
+减少骨骼，降低动画精度。
+
+#### GC：
+
+GC存在一个遍历过程，一般做法是，设置定时器，定时调用GC，以达到节约内存的目的，当然，如果内存优化做得好，GC问题就不大了。
+
+#### VSync：
+
+垂直同步+锁帧
+
+#### Others：
+
+主要看Unity QualitySetting 相关设置。

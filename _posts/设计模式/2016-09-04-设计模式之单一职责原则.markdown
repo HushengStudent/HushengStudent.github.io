@@ -1,0 +1,30 @@
+---
+layout: post
+title:  "[设计模式]设计模式之单一职责原则"
+date:   2016-09-04 03:47:10
+categories: 设计模式
+comments: true
+---
+
+遵循单一职责原的优点有：
+
+可以降低类的复杂度，一个类只负责一项职责，其逻辑肯定要比负责多项职责简单的多。
+
+提高类的可读性，提高系统的可维护性。
+
+变更引起的风险降低，变更是必然的，如果单一职责原则遵守的好，当修改一个功能时，可以显著降低对其他功能的影响。
+```java
+class Animal{  
+    public void breathe(String animal){  
+        System.out.println(animal+"呼吸空气");  
+    }  
+}  
+public class Client{  
+    public static void main(String[] args){  
+        Animal animal = new Animal();  
+        animal.breathe("牛");  
+        animal.breathe("羊");  
+        animal.breathe("猪");  
+    }  
+}  
+```

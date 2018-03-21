@@ -1,0 +1,551 @@
+---
+layout: post
+title:  "[数据结构]图"
+date:   2015-07-07 10:11:10
+categories: 数据结构与算法
+comments: true
+---
+
+#### ①图的定义
+图是由顶点集合(Vertex)及顶点间的关系集合组成的一种数据结构。
+
+#### ②图的操作
+图的一些常用操作：创建图、销毁图、清空图、加入边、删除边、获取权、获取结点的度、获取图的结点数、获取图的边数。
+
+#### ③图的存储结构
+1、邻接矩阵法：
+
+基本思想：
+
+用一维数组存储顶点 – 描述顶点相关的数据。
+
+用二维数组存储边 – 描述顶点间的边。
+![图片](http://owk5gjdrg.bkt.clouddn.com/0028%E5%9B%BE.png)
+
+![图片](http://owk5gjdrg.bkt.clouddn.com/0029%E5%9B%BE.png)
+
+无向图的邻接矩阵是对称的。
+
+有向图的邻接矩阵可能是不对称的。
+
+邻接矩阵法实现图结构：
+```java
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <curses.h>  
+   
+typedef char VertexType;                //顶点类型应由用户定义  
+typedef int EdgeType;                   //边上的权值类型应由用户定义  
+   
+#define MAXVEX  100             //最大顶点数，应由用户定义  
+#define INFINITY    65535               //用65535来代表无穷大  
+#define DEBUG  
+   
+typedef struct  
+{  
+    VertexType vexs[MAXVEX];            //顶点表  
+    EdgeType   arc[MAXVEX][MAXVEX];         //邻接矩阵，可看作边  
+    int numVertexes, numEdges;      //图中当前的顶点数和边数  
+}Graph;  
+   
+//定位  
+int locates(Graph *g, char ch)  
+{  
+    int i = 0;  
+    for(i = 0; i < g->numVertexes; i++)  
+    {  
+        if(g->vexs[i] == ch)  
+        {  
+            break;  
+        }  
+    }  
+    if(i >= g->numVertexes)  
+    {  
+        return -1;  
+    }  
+       
+    return i;  
+}  
+   
+//建立一个无向网图的邻接矩阵表示  
+void CreateGraph(Graph *g)  
+{  
+    int i, j, k, w;  
+    printf("输入顶点数和边数:\n");  
+    scanf("%d,%d", &(g->numVertexes), &(g->numEdges));  
+       
+    #ifdef DEBUG  
+    printf("%d %d\n", g->numVertexes, g->numEdges);  
+    #endif  
+   
+    for(i = 0; i < g->numVertexes; i++)  
+    {  
+        g->vexs[i] = getchar();  
+        while(g->vexs[i] == '\n')  
+        {  
+            g->vexs[i] = getchar();  
+        }  
+    }  
+       
+    #ifdef DEBUG  
+    for(i = 0; i < g->numVertexes; i++)  
+    {  
+        printf("%c ", g->vexs[i]);  
+    }  
+    printf("\n");  
+    #endif  
+   
+   
+    for(i = 0; i < g->numEdges; i++)  
+    {  
+        for(j = 0; j < g->numEdges; j++)  
+        {  
+            g->arc[i][j] = INFINITY; //邻接矩阵初始化  
+        }  
+    }  
+    for(k = 0; k < g->numEdges; k++)  
+    {  
+        char p, q;  
+        printf("输入边(vi,vj)上的下标i，下标j和权值:\n");  
+           
+        p = getchar();  
+        while(p == '\n')  
+        {  
+            p = getchar();  
+        }  
+        q = getchar();  
+        while(q == '\n')  
+        {  
+            q = getchar();  
+        }  
+        scanf("%d", &w);      
+           
+        int m = -1;  
+        int n = -1;  
+        m = locates(g, p);  
+        n = locates(g, q);  
+        if(n == -1 || m == -1)  
+        {  
+            fprintf(stderr, "there is no this vertex.\n");  
+            return;  
+        }  
+        //getchar();  
+        g->arc[m][n] = w;  
+        g->arc[n][m] = g->arc[m][n];  //因为是无向图，矩阵对称  
+    }  
+}  
+   
+//打印图  
+void printGraph(Graph g)  
+{  
+    int i, j;  
+    for(i = 0; i < g.numVertexes; i++)  
+    {  
+        for(j = 0; j < g.numVertexes; j++)  
+        {  
+            printf("%d  ", g.arc[i][j]);  
+        }  
+        printf("\n");  
+    }  
+}  
+   
+int main(int argc, char **argv)  
+{  
+    Graph g;  
+       
+    //邻接矩阵创建图  
+    CreateGraph(&g);  
+    printGraph(g);  
+    return 0;  
+}  
+```
+
+2、邻接链表法：
+
+基本思想：
+
+从同一个顶点发出的边链接在同一个链表中。
+
+每一个链表结点代表一条边, 结点中保存边的另一顶点的下标和权值。
+
+邻接矩阵是不错的一种图存储结构，但是，对于边数相对顶点较少的图，这种结构存在对存储空间的极大浪费。因此，找到一种数组与链表相结合的存储方法称为邻接表。
+
+邻接表的处理方法是这样的：
+
+（1）图中顶点用一个一维数组存储，当然，顶点也可以用单链表来存储，不过，数组可以较容易的读取顶点的信息，更加方便。
+
+（2）图中每个顶点vi的所有邻接点构成一个线性表，由于邻接点的个数不定，所以，用单链表存储，无向图称为顶点vi的边表，有向图则称为顶点vi作为弧尾的出边表。
+```java
+/* 邻接表表示的图结构 */  
+#include <stdio.h>  
+#include<stdlib.h>  
+   
+#define DEBUG  
+#define MAXVEX 1000         //最大顶点数  
+typedef char VertexType;        //顶点类型应由用户定义  
+typedef int EdgeType;           //边上的权值类型应由用户定义  
+   
+typedef struct EdgeNode         //边表结点  
+{  
+    int adjvex;         //邻接点域，存储该顶点对应的下标  
+    EdgeType weigth;        //用于存储权值，对于非网图可以不需要  
+    struct EdgeNode *next;      //链域，指向下一个邻接点  
+}EdgeNode;  
+   
+typedef struct VertexNode       //顶点表结构  
+{  
+    VertexType data;        //顶点域，存储顶点信息  
+    EdgeNode *firstedge;        //边表头指针  
+}VertexNode, AdjList[MAXVEX];  
+   
+typedef struct  
+{  
+    AdjList adjList;  
+    int numVertexes, numEdges;  //图中当前顶点数和边数  
+}GraphList;  
+   
+int Locate(GraphList *g, char ch)  
+{  
+    int i;  
+    for(i = 0; i < MAXVEX; i++)  
+    {  
+        if(ch == g->adjList[i].data)  
+        {  
+            break;  
+        }  
+    }  
+    if(i >= MAXVEX)  
+    {  
+        fprintf(stderr,"there is no vertex.\n");  
+        return -1;  
+    }  
+    return i;  
+}  
+   
+//建立图的邻接表结构  
+void CreateGraph(GraphList *g)  
+{  
+    int i, j, k;  
+    EdgeNode *e;  
+    EdgeNode *f;  
+    printf("输入顶点数和边数:\n");  
+    scanf("%d,%d", &g->numVertexes, &g->numEdges);  
+       
+    #ifdef DEBUG  
+    printf("%d,%d\n", g->numVertexes, g->numEdges);  
+    #endif  
+       
+    for(i = 0; i < g->numVertexes; i++)  
+    {  
+        printf("请输入顶点%d:\n", i);  
+        g->adjList[i].data = getchar();          //输入顶点信息  
+        g->adjList[i].firstedge = NULL;          //将边表置为空表  
+        while(g->adjList[i].data == '\n')  
+        {  
+            g->adjList[i].data = getchar();  
+        }  
+    }  
+    //建立边表  
+    for(k = 0; k < g->numEdges; k++)  
+    {  
+        printf("输入边(vi,vj)上的顶点序号:\n");  
+        char p, q;  
+        p = getchar();  
+        while(p == '\n')  
+        {  
+            p = getchar();  
+        }  
+        q = getchar();  
+        while(q == '\n')  
+        {  
+            q = getchar();  
+        }  
+        int m, n;  
+        m = Locate(g, p);  
+        n = Locate(g, q);  
+        if(m == -1 || n == -1)  
+        {  
+            return;  
+        }  
+        #ifdef DEBUG  
+        printf("p = %c\n", p);  
+        printf("q = %c\n", q);  
+        printf("m = %d\n", m);  
+        printf("n = %d\n", n);  
+        #endif  
+       
+        //向内存申请空间，生成边表结点  
+        e = (EdgeNode *)malloc(sizeof(EdgeNode));  
+        if(e == NULL)  
+        {  
+            fprintf(stderr, "malloc() error.\n");  
+            return;  
+        }  
+        //邻接序号为j  
+        e->adjvex = n;  
+        //将e指针指向当前顶点指向的结构  
+        e->next = g->adjList[m].firstedge;  
+        //将当前顶点的指针指向e  
+        g->adjList[m].firstedge = e;  
+           
+        f = (EdgeNode *)malloc(sizeof(EdgeNode));  
+        if(f == NULL)  
+        {  
+            fprintf(stderr, "malloc() error.\n");  
+            return;  
+        }  
+        f->adjvex = m;  
+        f->next = g->adjList[n].firstedge;  
+        g->adjList[n].firstedge = f;  
+    }  
+}  
+   
+   
+void printGraph(GraphList *g)  
+{  
+    int i = 0;  
+    #ifdef DEBUG  
+    printf("printGraph() start.\n");  
+    #endif  
+       
+    while(g->adjList[i].firstedge != NULL && i < MAXVEX)  
+    {  
+        printf("顶点:%c  ", g->adjList[i].data);  
+        EdgeNode *e = NULL;  
+        e = g->adjList[i].firstedge;  
+        while(e != NULL)  
+        {  
+            printf("%d  ", e->adjvex);  
+            e = e->next;  
+        }  
+        i++;  
+        printf("\n");  
+    }  
+}  
+   
+int main(int argc, char **argv)  
+{  
+    GraphList g;  
+    CreateGraph(&g);  
+    printGraph(&g);  
+    return 0;  
+}  
+```
+![图片](http://owk5gjdrg.bkt.clouddn.com/0030%E5%9B%BE.png)
+
+#### ④图的遍历
+定义：
+
+从图中的某一顶点出发，沿着一些边访遍图中所有的顶点，使得每个顶点仅被访问一次。
+
+分类：
+
+深度优先搜索 DFS (Depth First Search)
+
+广度优先搜索 BFS (Breadth First Search)
+
+深度优先遍历：
+![图片](http://owk5gjdrg.bkt.clouddn.com/0031%E5%9B%BE.png)
+
+关键：
+
+整个过程需要一个标记顶点是否被访问过的辅助数组visited[]
+
+1、深度优先遍历：
+算法描述：
+访问起始顶点v，当v还有邻接顶点未访问时，深度遍历未访问过的邻接顶点w，当v的所有邻接顶点都被访问时
+若图中所有顶点均已访问，算法结束。若图中还有未访问的顶点、以未访问顶点作为起始顶点深度遍历。
+
+深度优先遍历，也有称为深度优先搜索，简称DFS。其实，就像是一棵树的前序遍历。
+它从图中某个结点v出发，访问此顶点，然后从v的未被访问的邻接点出发深度优先遍历图，直至图中所有和v有路径相通的顶点都被访问到。若图中尚有顶点未被访问，则另选图中一个未曾被访问的顶点作起始点，重复上述过程，直至图中的所有顶点都被访问到为止。
+
+邻接矩阵的方式：
+```java
+#define MAXVEX  100     //最大顶点数  
+typedef int Boolean;            //Boolean 是布尔类型，其值是TRUE 或FALSE  
+Boolean visited[MAXVEX];        //访问标志数组  
+#define TRUE 1  
+#define FALSE 0  
+   
+//邻接矩阵的深度优先递归算法  
+void DFS(Graph g, int i)  
+{  
+    int j;  
+    visited[i] = TRUE;  
+    printf("%c ", g.vexs[i]);                           //打印顶点，也可以其他操作  
+    for(j = 0; j < g.numVertexes; j++)  
+    {  
+        if(g.arc[i][j] == 1 && !visited[j])  
+        {  
+            DFS(g, j);                  //对为访问的邻接顶点递归调用  
+        }  
+    }  
+}  
+   
+//邻接矩阵的深度遍历操作  
+void DFSTraverse(Graph g)  
+{  
+    int i;  
+    for(i = 0; i < g.numVertexes; i++)  
+    {  
+        visited[i] = FALSE;         //初始化所有顶点状态都是未访问过状态  
+    }  
+    for(i = 0; i < g.numVertexes; i++)  
+    {  
+        if(!visited[i])             //对未访问的顶点调用DFS，若是连通图，只会执行一次  
+        {  
+            DFS(g,i);  
+        }  
+    }  
+}  
+```
+```java
+//邻接表的深度递归算法  
+void DFS(GraphList g, int i)  
+{  
+    EdgeNode *p;  
+    visited[i] = TRUE;  
+    printf("%c ", g->adjList[i].data);   //打印顶点，也可以其他操作  
+    p = g->adjList[i].firstedge;  
+    while(p)  
+    {  
+        if(!visited[p->adjvex])  
+        {  
+            DFS(g, p->adjvex);           //对访问的邻接顶点递归调用  
+        }  
+        p = p->next;  
+    }  
+}  
+   
+//邻接表的深度遍历操作  
+void DFSTraverse(GraphList g)  
+{  
+    int i;  
+    for(i = 0; i < g.numVertexes; i++)  
+    {  
+        visited[i] = FALSE;  
+    }  
+    for(i = 0; i < g.numVertexes; i++)  
+    {  
+        if(!visited[i])  
+        {  
+            DFS(g, i);  
+        }  
+    }  
+}  
+```
+广度优先遍历：
+![图片](http://owk5gjdrg.bkt.clouddn.com/0032%E5%9B%BE.png)
+
+关键：
+
+整个过程需要一个标记顶点是否被访问过的辅助数组visited[]
+
+广度优先遍历：
+
+算法描述：访问起始顶点v0、依次访问v0的各个邻接点v01,v02,…,v0x、假设最近一次访问的顶点依次为vi1,vi2,…,viy,则依次访问vi1,vi2,…,viy的未被访问的邻接点、重复3,直到所有顶点均被访问。
+
+提示：
+
+广度优先遍历是一种层次遍历，需要借助队列实现。
+```java
+//邻接矩阵的广度遍历算法  
+void BFSTraverse(Graph g)  
+{  
+    int i, j;  
+    Queue q;  
+    for(i = 0; i < g.numVertexes; i++)  
+    {  
+        visited[i] = FALSE;  
+    }  
+    InitQueue(&q);  
+    for(i = 0; i < g.numVertexes; i++)//对每个顶点做循环  
+    {  
+        if(!visited[i])               //若是未访问过  
+        {  
+            visited[i] = TRUE;  
+            printf("%c ", g.vexs[i]); //打印结点，也可以其他操作  
+            EnQueue(&q, i);           //将此结点入队列  
+            while(!QueueEmpty(q))     //将队中元素出队列，赋值给  
+            {  
+                int m;  
+                DeQueue(&q, &m);          
+                for(j = 0; j < g.numVertexes; j++)  
+                {  
+                    //判断其他顶点若与当前顶点存在边且未访问过  
+                    if(g.arc[m][j] == 1 && !visited[j])  
+                    {  
+                        visited[j] = TRUE;  
+                        printf("%c ", g.vexs[j]);  
+                        EnQueue(&q, j);  
+                    }  
+                }  
+            }  
+        }  
+    }  
+}  
+```
+```java
+//邻接表的广度遍历算法  
+void BFSTraverse(GraphList g)  
+{  
+    int i;  
+    EdgeNode *p;  
+    Queue q;  
+    for(i = 0; i < g.numVertexes; i++)  
+    {  
+        visited[i] = FALSE;  
+    }  
+    InitQueue(&q);  
+    for(i = 0; i < g.numVertexes; i++)  
+    {  
+        if(!visited[i])  
+        {  
+            visited[i] = TRUE;  
+            printf("%c ", g.adjList[i].data);   //打印顶点，也可以其他操作  
+            EnQueue(&q, i);  
+            while(!QueueEmpty(q))  
+            {  
+                int m;  
+                DeQueue(&q, &m);  
+                p = g.adjList[m].firstedge;     找到当前顶点边表链表头指针  
+                while(p)  
+                {  
+                    if(!visited[p->adjvex])  
+                    {  
+                        visited[p->adjvex] = TRUE;  
+                        printf("%c ", g.adjList[p->adjvex].data);  
+                        EnQueue(&q, p->adjvex);  
+                    }  
+                    p = p->next;  
+                }  
+            }  
+        }  
+    }  
+}  
+```
+
+#### ⑤最小连通网
+1、Prim算法是针对顶点展开的，适合于边的数量较多的情况。
+
+2、Kruskal算法是针对边展开的，适合于边的数量较少的情况。
+
+#### ⑥最短路径
+最短路径问题：
+
+最短路径问题：如果从有向图中某一顶点(称为源点)到达另一顶点(称为终点)的路径可能不止一条，如何找到一条的路径可能不止一条，如何找
+到一条。
+
+路径使得沿此路径上各边上的权值总和达到最小。
+
+路径使得沿此路径上各边上的权值总和达到最小。
+
+问题解法
+
+单源最短路径问题：
+
+1、Dijkstra算法
+
+所有顶点之间的最短路径：
+
+2、Floyd算法
