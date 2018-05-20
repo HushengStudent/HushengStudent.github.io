@@ -19,9 +19,11 @@ QQ：1258164851
 
 #### 工作经历
 
-##### 悠悠恋物语(20170620全平台上线)
+##### 1、悠悠恋物语(20170620全平台上线)
 
 ![图片](http://owk5gjdrg.bkt.clouddn.com/%E6%82%A0%E6%82%A0%E6%81%8B%E7%89%A9%E8%AF%AD.png)
 
 
 [Watch on Web Player](http://owk5gjdrg.bkt.clouddn.com/%E6%82%A0%E6%82%A0%E6%81%8B%E7%89%A9%E8%AF%AD.mp4)
+
+##### 2、3D MMOARPG 仙境传说RO
