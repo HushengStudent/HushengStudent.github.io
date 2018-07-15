@@ -361,9 +361,13 @@ public void BehaviorTreeTest()
 
 ```
 首先配置上图节点参数：
+
 ![图片](http://owk5gjdrg.bkt.clouddn.com/0081%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1.png)
+
 执行该行为树：
+
 ![图片](http://owk5gjdrg.bkt.clouddn.com/0082%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1.png)
+
 输出结果与设计所想一致！
 
 #### 4、工作流程
