@@ -28,7 +28,7 @@ QQ：1258164851
 
 ##### 2、大世界冒险3D MMORPG手游:仙境传说RO
 
-![图片](https://s2.ax1x.com/2019/01/06/Fbiw80.png)
+![图片](https://s2.ax1x.com/2019/01/06/FbFAGq.png)
 
 
 [官网：https://ro.qq.com/](https://ro.qq.com/)
