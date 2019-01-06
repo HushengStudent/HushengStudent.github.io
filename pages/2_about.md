@@ -21,7 +21,7 @@ QQ：1258164851
 
 ##### 1、悠悠恋物语(20170620全平台上线)
 
-![图片](http://owk5gjdrg.bkt.clouddn.com/%E6%82%A0%E6%82%A0%E6%81%8B%E7%89%A9%E8%AF%AD.png)
+![图片](https://s2.ax1x.com/2019/01/06/Fbiu4I.png)
 
 
 [Watch on Web Player](http://owk5gjdrg.bkt.clouddn.com/%E6%82%A0%E6%82%A0%E6%81%8B%E7%89%A9%E8%AF%AD.mp4)
