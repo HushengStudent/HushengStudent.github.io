@@ -16,7 +16,7 @@ permalink: /about/
 
 #### 3D女性向换装手游：悠悠恋物语
 
-![图片](https://s2.ax1x.com/2019/01/06/Fbiu4I.png)
+![图片](https://github.com/HushengStudent/HushengStudent.github.io/blob/master/pages/%23%E5%9B%BE%E7%89%87/%E6%82%A0%E6%82%A0%E6%81%8B%E7%89%A9%E8%AF%AD.png?raw=true)
 
 
 [官网：http://uu.ddianle.com/](http://uu.ddianle.com/)
