@@ -6,9 +6,6 @@ categories: Unity优化
 comments: true
 ---
 
-![图片](http://owk5gjdrg.bkt.clouddn.com/0077%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.png)
-
-
 内存优化可以使用Unity profiler或者对应平台的内存分析工具进行分析，从 `Unity3D内部的内存+Mono的托管内存` 进行分析，避免内存泄漏。
 
 #### 1、内存测试一般使用手机测试，Unity profiler在Editor测试下的结果不准确。

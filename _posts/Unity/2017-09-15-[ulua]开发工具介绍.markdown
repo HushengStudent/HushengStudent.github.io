@@ -10,11 +10,11 @@ comments: true
 
 主角介绍：IntelliJ IDEA Community Edition+EmmyLua插件。
 
-![图片](http://owk5gjdrg.bkt.clouddn.com/0063%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D.png)
+![图片](https://github.com/HushengStudent/HushengStudent.github.io/blob/master/_posts/Unity/%23%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/1.png?raw=true)
 
-![图片](http://owk5gjdrg.bkt.clouddn.com/0064%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D.png)
+![图片](https://github.com/HushengStudent/HushengStudent.github.io/blob/master/_posts/Unity/%23%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/2.png?raw=true)
 
-![图片](http://owk5gjdrg.bkt.clouddn.com/0065%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D.png)
+![图片](https://github.com/HushengStudent/HushengStudent.github.io/blob/master/_posts/Unity/%23%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/3.png?raw=true)
 
 这样，unity结合lua开发的环境就搭建好了，有提示，可断点调试。
 

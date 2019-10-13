@@ -6,8 +6,6 @@ categories: Unity优化
 comments: true
 ---
 
-![图片](http://owk5gjdrg.bkt.clouddn.com/0074CPU%E4%BC%98%E5%8C%96.png)
-
 CPU优化主要是减少计算相关的内容，避免大量的频繁的计算相关操作，当然CUP优化也要与内存优化，渲染优化，发热耗电等权衡取舍。
 
 #### Rendering：

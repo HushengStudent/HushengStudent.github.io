@@ -164,7 +164,7 @@ public abstract class AbsComposite : AbsBehavior
 #### 3、行为树编辑器
 
 行为树编辑器，可参考其他常见的行为树编辑器设计，这里我采用了NodeCanvas这个插件，效果图如下：
-![图片](http://owk5gjdrg.bkt.clouddn.com/0080%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1.png)
+![图片](https://github.com/HushengStudent/HushengStudent.github.io/blob/master/_posts/Unity/%23%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1/0080%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1.png?raw=true)
 该插件支持导出json文件，我们把json文件在Unity后缀改成.bytes，运行时解析json文件；
 
 解析过程参见BehaviorTreeFactory.cs：
@@ -362,11 +362,11 @@ public void BehaviorTreeTest()
 ```
 首先配置上图节点参数：
 
-![图片](http://owk5gjdrg.bkt.clouddn.com/0081%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1.png)
+![图片](https://github.com/HushengStudent/HushengStudent.github.io/blob/master/_posts/Unity/%23%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1/0081%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1.png?raw=true)
 
 执行该行为树：
 
-![图片](http://owk5gjdrg.bkt.clouddn.com/0082%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1.png)
+![图片](https://github.com/HushengStudent/HushengStudent.github.io/blob/master/_posts/Unity/%23%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1/0082%E8%A1%8C%E4%B8%BA%E6%A0%91%E8%AE%BE%E8%AE%A1.png?raw=true)
 
 输出结果与设计所想一致！
 
