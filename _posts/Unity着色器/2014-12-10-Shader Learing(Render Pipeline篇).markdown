@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "[Unity Shader]Shader Learing(Render Pipeline篇)"
-date:   2015-01-10 10:10:10
+date:   2014-12-10 10:10:10
 categories: Unity着色器
 comments: true
 ---

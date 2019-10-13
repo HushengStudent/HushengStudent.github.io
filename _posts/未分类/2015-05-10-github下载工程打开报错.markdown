@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "[未分类]System.IO.File does not contain a definition for ReadAllBytes"
-date:   2015-01-10 10:10:10
+date:   2015-05-10 10:10:10
 categories: 未分类
 comments: true
 ---

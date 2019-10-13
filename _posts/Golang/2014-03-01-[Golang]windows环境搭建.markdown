@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "[Golang]windows环境搭建"
-date:   2015-01-10 10:10:10
+date:   2014-03-01 10:10:10
 categories: Golang
 comments: true
 ---

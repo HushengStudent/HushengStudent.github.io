@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "[UIFramework]UIFramework之通用单例类Singleton"
-date:   2015-01-10 10:10:10
+date:   2014-09-10 10:10:10
 categories: Unity框架
 comments: true
 ---
