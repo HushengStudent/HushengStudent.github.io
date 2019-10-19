@@ -14,6 +14,8 @@ PC设置：
 
 2、adb forward tcp:54999 localabstract:Unity-xxx.xxx.xxx
 
+`端口改成34999`
+
 xxx.xxx.xxx为游戏包名。
 
 3、查看占用54999端口的进程：netstat -ano | findstr 54999
