@@ -6,6 +6,6 @@ layout: frontpage
 
 GitHub：[胡胜同学](https://github.com/HushengStudent)
 
-BLOG：[GitHub](https://hushengstudent.github.io/) [码云](http://hushengstudent.oschina.io/) [CSDN](http://blog.csdn.net/husheng0)
+BLOG：[胡胜同学](https://hushengstudent.github.io/) 
 
 更多内容，请右上角My Project 和 About Me
