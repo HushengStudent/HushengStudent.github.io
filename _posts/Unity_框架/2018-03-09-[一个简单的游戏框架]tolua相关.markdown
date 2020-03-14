@@ -1,0 +1,326 @@
+---
+layout: post
+title:  "[一个简单的游戏框架]tolua相关"
+date:   2018-03-09 00:00:10
+categories: Unity_框架
+comments: true
+---
+
+[[https://github.com/HushengStudent/myGameFramework]](https://github.com/HushengStudent/myGameFramework)
+
+#### 1、tolua集成
+
+关于tolua的集成主要参考LuaFramework_UGUI，实现自己的LuaMgr。
+```csharp
+
+//参考(https://github.com/jarjin/LuaFramework_UGUI)集成tolua;  
+    public class LuaMgr : MonoSingleton<LuaMgr>   
+    {  
+        private LuaState lua;  
+        private LuaLoaderUtility loader;  
+        private LuaLooper loop = null;  
+  
+        public override void Init()  
+        {  
+            base.Init();  
+            //...  
+        }  
+  
+        public override void AwakeEx()  
+        {  
+            base.AwakeEx();  
+            //初始化LuaMgr;  
+            loader = new LuaLoaderUtility();//TODO:Lua AssetBundle的使用;  
+            lua = new LuaState();  
+            this.OpenLibs();  
+            lua.LuaSetTop(0);  
+            LuaBinder.Bind(lua);  
+            DelegateFactory.Init();  
+            LuaCoroutine.Register(lua, this);  
+        }  
+          
+        /// <summary>  
+        /// 初始化加载第三方库;  
+        /// </summary>  
+        void OpenLibs()  
+        {  
+            lua.OpenLibs(LuaDLL.luaopen_pb);  
+            //lua.OpenLibs(LuaDLL.luaopen_sproto_core);  
+            //lua.OpenLibs(LuaDLL.luaopen_protobuf_c);  
+            lua.OpenLibs(LuaDLL.luaopen_lpeg);  
+            lua.OpenLibs(LuaDLL.luaopen_bit);  
+            lua.OpenLibs(LuaDLL.luaopen_socket_core);  
+            this.OpenCJson();  
+        }  
+  
+        //cjson比较特殊,只new了一个table,没有注册库,这里注册一下;  
+        protected void OpenCJson()  
+        {  
+            lua.LuaGetField(LuaIndexes.LUA_REGISTRYINDEX, "_LOADED");  
+            lua.OpenLibs(LuaDLL.luaopen_cjson);  
+            lua.LuaSetField(-2, "cjson");  
+            lua.OpenLibs(LuaDLL.luaopen_cjson_safe);  
+            lua.LuaSetField(-2, "cjson.safe");  
+        }  
+  
+        public void StartLuaMgr()  
+        {  
+            InitLuaPath();  
+            InitLuaBundle();  
+            this.lua.Start();    //启动LUAVM;  
+            this.StartMain();  
+            this.StartLooper();  
+        }  
+  
+        /// <summary>  
+        /// 初始化Lua代码加载路径;  
+        /// </summary>  
+        void InitLuaPath()  
+        {  
+            lua.AddSearchPath(LuaConst.luaDir);  
+            lua.AddSearchPath(LuaConst.luaResDir);  
+        }  
+  
+        /// <summary>  
+        /// 初始化LuaBundle;  
+        /// </summary>  
+        void InitLuaBundle()  
+        {  
+            if (loader.beZip)  
+            {  
+                //loader.AddBundle("lua/lua.unity3d");  
+            }  
+        }  
+  
+        void StartLooper()  
+        {  
+            loop = gameObject.AddComponent<LuaLooper>();  
+            loop.luaState = lua;  
+        }  
+  
+        void StartMain()  
+        {  
+            lua.DoFile("Main.lua");  
+            LuaFunction main = lua.GetFunction("Main");  
+            main.Call();  
+            main.Dispose();  
+            main = null;  
+        }  
+  
+        public void DoFile(string filename)  
+        {  
+            lua.DoFile(filename);  
+        }  
+  
+        // Update is called once per frame;  
+        public object[] CallFunction(string funcName, params object[] args)  
+        {  
+            LuaFunction func = lua.GetFunction(funcName);  
+            if (func != null)  
+            {  
+                return func.LazyCall(args);  
+            }  
+            return null;  
+        }  
+  
+        public void CallLuaModuleMethod(string funcName, params object[] args)  
+        {  
+            LuaFunction func = lua.GetFunction(funcName);  
+            if (func != null)  
+            {  
+                func.Call(args);  
+            }  
+        }  
+  
+        public void CallLuaTableMethod(string module, string funcName, params object[] args)  
+        {  
+            LuaFunction func = lua.GetFunction(module+"."+ funcName);  
+            LuaTable table = lua.GetTable(module);  
+            if(func!=null && table != null)  
+            {  
+                func.Call(table,args);  
+            }  
+        }  
+  
+        public void LuaGC()  
+        {  
+            lua.LuaGC(LuaGCOptions.LUA_GCCOLLECT);  
+        }  
+  
+        public void Close()  
+        {  
+            loop.Destroy();  
+            loop = null;  
+  
+            lua.Dispose();  
+            lua = null;  
+            loader = null;  
+        }  
+    }  
+```
+
+#### 2、C#调用Lua
+
+##### ①在C#中调用Lua的方法：
+
+C#调用Lua文件的方法：如 xxx.func() 这种形式：LuaMgr：
+```csharp
+public void CallLuaModuleMethod(string funcName, params object[] args)  
+        {  
+            LuaFunction func = lua.GetFunction(funcName);  
+            if (func != null)  
+            {  
+                func.Call(args);  
+            }  
+        }  
+```
+
+C#调用Lua类中的的成员方法，如 xxx:func() 这种形式：LuaMgr：
+
+需要先拿到对应对Table：
+```csharp
+
+public void CallLuaTableMethod(string module, string funcName, params object[] args)  
+        {  
+            LuaFunction func = lua.GetFunction(module+"."+ funcName);  
+            LuaTable table = lua.GetTable(module);  
+            if(func!=null && table != null)  
+            {  
+                func.Call(table,args);  
+            }  
+        }  
+```
+这是两者调用时，点号和冒号的区别。
+
+#### 3、Lua调用C#
+
+在CustomSettings中配置需要被Lua调用的类并导出，在Lua中就可以直接调用。
+
+如参考logUtility的使用。
+
+#### 4、tolua中的事件系统
+
+源文件：myGameFramework\Client\Assets\LuaFramework\ToLua\Lua\event.lua
+
+5.tolua中的定时器
+
+源文件：myGameFramework\Client\Assets\LuaFramework\ToLua\Lua\System\Timer.lua
+
+简单示例：
+```lua
+function Game.Test()  
+      
+end  
+  
+function Game.Init()  
+    tim = Timer.New(Game.FunTest,1, -1, true)   
+--参数1为调用的方法名，参数2为间隔时间，参数3为循环次数(当为-1时无限循环)  
+--参数4为是否忽略时间的Scale，scale false 采用deltaTime计时，true 采用 unscaledDeltaTime计时  
+    tim:Start()  
+end  
+```
+
+#### 5、protoc-gen-lua使用
+
+tolua自带pblua，使用pblua生成lua代码需要配置相关环境：
+⑴.解压myGameFramework\File\Source\pblua\protobuff\protobuf-python-3.0.0.zip 到C盘。
+⑵.解压myGameFramework\File\Source\pblua\protobuff\protoc-3.0.0-win32.zip 把Protoc放到protobuf/src下。
+⑶.使用protobuf的python版本必须在2.6以上，protoc的版本要与protobuf的版本保持一致。
+⑷.如果python2.7的版本大于2.7.9，在安装python时setuptools已自动安装，否则则需要手动。
+⑸.cmd进入到protobuf/python 执行以下命令:
+```lua
+python setup.py build
+python setup.py install
+```
+⑹.致此pblua环境搭建完成。
+⑺.myGameFramework\Tools\protoc-gen-lua-master 为pblua工作目录，已经解压好了。
+⑻.参考代码：PbLuaEditor.cs：
+```csharp
+
+public static void BuildPb2Lua()  
+        {  
+            paths.Clear();  
+            files.Clear();  
+            Recursive(pbluaDir);  
+            int index = 0;  
+            foreach (string f in files)  
+            {  
+                index++;  
+                string name = Path.GetFileName(f);  
+                string ext = Path.GetExtension(f);  
+                string workPath = Path.GetDirectoryName(f);  
+                if (!ext.Equals(".proto")) continue;  
+                EditorUtility.DisplayProgressBar("Build PbLua File", "gen proto to lua:" + name, index / files.Count);  
+                ProcessStartInfo info = new ProcessStartInfo();  
+                info.FileName = protoc;  
+                info.Arguments = " --lua_out=./ --plugin=protoc-gen-lua=" + protoc_gen_dir + " " + name;  
+                info.WindowStyle = ProcessWindowStyle.Hidden;  
+                info.UseShellExecute = true;  
+                info.WorkingDirectory = workPath;  
+                info.ErrorDialog = true;  
+                LogUtility.Print("gen proto to lua:" + name);  
+                Process pro = Process.Start(info);  
+                pro.WaitForExit();  
+            }  
+            EditorUtility.ClearProgressBar();  
+            AssetDatabase.Refresh();  
+        }  
+```
+执行该方法，就能生成pb文件对应的lua文件。
+
+#### 6、protogen使用
+
+pb可以生成Lua代码，当然同时也需要生成对应对C#文件，供服务器使用，部分协议客户端也需要使用到C#形式的协议文件：
+
+pb生成C#使用到了protogen：
+⑴.解压myGameFramework\File\Source\pblua\protobuff-net\protobuf-net-r668.zip。
+⑵.打开项目下protobuff-net工程，生成。
+⑶.打开ProtoGen工程，生成。
+⑷.其中ProtoGen工程生成的protogen.exe即可以拿来用proto文件生成C#代码。
+⑸.参考代码：PbLuaEditor.cs：
+```csharp
+
+public static void BuildPb2Csharp()  
+        {  
+            paths.Clear();  
+            files.Clear();  
+            Recursive(pbluaDir);  
+            int index = 0;  
+            foreach (string f in files)  
+            {  
+                index++;  
+                string name = Path.GetFileName(f);  
+                string ext = Path.GetExtension(f);  
+                string workPath = Path.GetDirectoryName(f);  
+                if (!ext.Equals(".proto")) continue;  
+                //输出目录;  
+                string outPath = GetCsharpPath(f);  
+                if (null == outPath) continue;  
+                if (!Directory.Exists(outPath))  
+                {  
+                    Directory.CreateDirectory(outPath);  
+                }  
+                string fileName = Path.GetFileNameWithoutExtension(f);  
+                EditorUtility.DisplayProgressBar("Build PbLua File", "gen proto to c#:" + name, index / files.Count);  
+                ProcessStartInfo info = new ProcessStartInfo();  
+                info.FileName = protogen;  
+                info.Arguments = "-i:" + name + " -o:" + outPath + "/" + fileName + ".cs -p:detectMissing";  
+                info.WindowStyle = ProcessWindowStyle.Hidden;  
+                info.UseShellExecute = true;  
+                info.WorkingDirectory = workPath;  
+                info.ErrorDialog = true;  
+                LogUtility.Print("gen proto to c#:" + name);  
+                Process pro = Process.Start(info);  
+                pro.WaitForExit();  
+            }  
+            EditorUtility.ClearProgressBar();  
+            AssetDatabase.Refresh();  
+        }  
+```
+也是使用C#函数调用应用程序根据一定的参数生成对应的C#文件。
+
+客户端与服务器之间通信使用protobuf-net，导入protobuf-net会报错，存在不安全代码，只需要在Asset目录加入mcs.rsp文件即可：
+```csharp
+
+-unsafe  
+```
