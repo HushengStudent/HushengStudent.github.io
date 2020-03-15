@@ -10,6 +10,8 @@ permalink: /projects/
 
 ### 我的项目
 
-[myGameFramework](https://github.com/HushengStudent/myGameFramework)：`This is a game framework include client server and some tools.`
+[myGameFramework](https://github.com/HushengStudent/myGameFramework)：`My game framework include client server and tools.`
+
+[myShaderLibrary](https://github.com/HushengStudent/myShaderLibrary)：`My Unity Shader Library.`
 
 ### 我的推荐
