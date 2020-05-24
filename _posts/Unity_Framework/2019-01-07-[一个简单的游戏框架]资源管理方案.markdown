@@ -1,0 +1,42 @@
+---
+layout: post
+title:  "[一个简单的游戏框架]资源管理方案"
+date:   2019-01-07 00:00:10
+categories: Unity_Framework
+comments: true
+---
+
+代码：[https://github.com/HushengStudent/myGameFramework](https://github.com/HushengStudent/myGameFramework)
+
+unity的资源类型，主要有Prefab，纹理，animator，clip，material，shader，mesh等。
+unity的资源加载方式主要有Resources加载和AssetBundle加载两种方式。
+
+#### 1、Resources加载
+Resources加载主要分为同步和异步两种方式，Resources文件夹下资源过多，游戏启动会变慢，另外又无法热更新，所以这种加载方式是不推荐的。（调Resources.LoadAsync加载的同一帧,调Resources.Load加载同一资源会报错）
+
+#### 2、AssetBundle加载
+AssetBundle加载主要分为同步和异步两种方式。
+AssetBundle加载完成后再加载AssetBundle，或开始异步加载AssetBundle后再同步加载AssetBundle，都会报错；The AssetBundle xxxx can't be loaded because another AssetBundle with the same files is already loaded.(同一帧先异步加载再同步加载，异步加载成功，但是同步加载报这个错，return null)；
+开始异步加载AssetBundle后再异步加载AssetBundle，会报错，Unable to open archive file: xxxx；
+
+AssetBundle加载，主要使用同步和异步加载两种方式，同步加载时，当资源较大，或者当同一帧加载的资源数量过多时，会导致掉帧；所以我们在开发中，主要使用异步加载的方式，Unity原生的异步加载api接口，一般使用协程实现，且异步加载没法停止，实在是不好管理；
+
+下面简单说下实现更好的AssetBundle异步加载。实现一个AssetBundle的异步加载代理类，可以添加异步回调，在加载完成后实现回调，并且可以直接获取对应的资源；该类可以直接取消，取消后，如果是已经加载完成，则由异步管理类直接回收，如果没有加载完成，则等待加载完成后，再回收。
+
+一秒30帧,一帧最久0.33秒;UWA上有建议用于资源加载为0.16s合适；
+
+#### 3、资源加载
+流程：AssetBundle资源加载（load）->assets Memory（Instantiate）->scene Memory
+我们上述的资源中，需要被Instantiate一般是prefab，如果修改mat或者mesh的话，也是需要Instantiate；
+所以就存在多份scene Memory，引用同一分assets Memory；当然，所有资源都是可以调用Instantiate，比如纹理，没有开启read/write的纹理资源时，会报错 Instantiating a non-readable 'Test' texture is not allowed! Please mark the texture readable in the inspector or don't instantiate it；
+
+#### 4、资源卸载
+1、gameObject assets Memory 只能通过Unload(true)和UnloadUnUseAsset()卸载；gameObject Instantiate出的 scene Memory通过Destroy卸载；
+2、其他资源通过Instantiate出的 scene Memory 通过Destroy卸载；assets Memory 只能通过Resources.UnloadAsset(asset)卸载；
+
+Resources.UnloadAsset(asset)；卸载不需实例化的资源：纹理，animator，clip，material；卸载非GameObject类型的资源，会将内存中已加载资源及其克隆体卸载：前提是已经没有任何引用持有该资源，可以置null再卸载；否则Unload Assets may only be used on individual assets and can not be used on GameObject's/Components or AssetBundles；
+
+卸载Prefab之后，可能存在没有卸载的Asset资源，纹理，材质等待，调用Resources.UnloadUnusedAssets()可卸载，调用System.GC.Collect()；立即回收；
+prefab，只能通过Unload(True)卸载和Resources.UnloadUnusedAssets卸载，如果打包时，该prefab依赖的其他资源也打进去了，在这之后，应该是AssetBundle镜像卸载了，但资源还是存在的，包括依赖的非prefab资源；将资源打包更细，比如将资源和Prefab进行分离，这样可以将加载资源和加载Prefab分开，从而可以通过自己管理加载资源并将其进行储存，当你想精准释放资源时，则可以直接通过Resources.UnloadAsset来进行卸载。
+
+思考了一个问题，加载之后，自己持有，是不是就可以把AssetBundle镜像直接卸载掉，这样可以节约内存？结果当然是不行的，不能加载 assets Memory之后就卸载对象，因为依赖打包的关系，会导致重复加载，存在多份assets Memory；只有常驻的才卸载ab镜像，比如Shader。
