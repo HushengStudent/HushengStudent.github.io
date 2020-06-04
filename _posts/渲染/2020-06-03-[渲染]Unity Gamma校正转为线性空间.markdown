@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "[渲染]Shader"
+title:  "[渲染]Unity Gamma校正转为线性空间"
 date:   2020-06-03 23:49:00
-categories: Unity Gamma校正转为线性空间
+categories: 渲染
 comments: true
 ---
 
