@@ -17,10 +17,12 @@ Graphics设置里面设置Always Inclueded Shaders，则所有变种一定都会
 
 变种太多会导致ShaderLab内存占用变大，Shader.Parse(编译Shader)和Shader.CreateGpuProgram(创建CPU执行程序片段)占用CPU时间变长；
 
+
 #### ShaderVariantCollection使用：
 使用ShaderVariantCollection来WarmUp，而不是全部WarmUp，是为了优化Shader.CreateGpuProgram(创建CPU执行程序片段)；
 
 使用ClearCurrentShaderVariantCollection和SaveCurrentShaderVariantCollection来计算生成多个ShaderVariantCollection，多帧进行WarmUp；
+
 
 #### Shader打包AB：
 把所有Shader和ShaderVariantCollection一起打包到一个AB，游戏运行时加载这个AB全部资源并缓存，并调用其中所有ShaderVariantCollection.WarmUp；
@@ -31,12 +33,14 @@ Graphics设置里面设置Always Inclueded Shaders，则所有变种一定都会
 
 如果还出现了Shader.CreateGpuProgram这说明Shader存在冗余或者ShaderVariantCollection收集不完全；
 
+
 #### Shader冗余：
 按以上Shader打包AB的方式进行打包，如果还存在Shader冗余，则可能是：
 
 ①Resource目录下存在Shader并在运行时被使用了，常见第三方插件；
 
 ②Unity默认材质引用的Shader，又没有添加到Always Inclueded Shaders；
+
 
 #### ShaderLab内存占用：
 ShaderLab内存占用较大，则可能是：
