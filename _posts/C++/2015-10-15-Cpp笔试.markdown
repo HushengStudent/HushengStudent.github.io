@@ -2,7 +2,7 @@
 layout: post
 title:  "[C++]C++笔试"
 date:   2015-10-15 00:10:10
-categories: Cpp
+categories: C++
 comments: true
 ---
 

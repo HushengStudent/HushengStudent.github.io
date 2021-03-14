@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "[文章收藏]天天写业务代码的程序员，怎么成为技术大牛，开始写技术代码？"
+title:  "[未分类]天天写业务代码的程序员，怎么成为技术大牛，开始写技术代码？"
 date:   2015-04-10 10:10:10
-categories: 文章收藏
+categories: 未分类
 comments: true
 ---
 
