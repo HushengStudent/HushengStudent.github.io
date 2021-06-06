@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity Manual]Unity Manual之资源数据库 (AssetDatabase)"
+title:  "[Unity]Unity资源数据库 (AssetDatabase)"
 date:   2017-01-10 10:10:10
 categories: Unity
 comments: true
