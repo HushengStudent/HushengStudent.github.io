@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity 热更新]tolua集成"
+title:  "[Unity]tolua集成"
 date:   2017-11-08 00:00:10
 categories: Unity
 comments: true

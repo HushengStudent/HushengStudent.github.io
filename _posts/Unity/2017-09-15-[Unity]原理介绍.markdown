@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[ulua]原理介绍"
+title:  "[Unity]uLua原理介绍"
 date:   2017-09-15 23:55:10
 categories: Unity
 comments: true
