@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity 工具技巧]NGUI之RenderQueue"
+title:  "[Unity]NGUI之RenderQueue"
 date:   2017-05-10 10:10:10
 categories: Unity
 comments: true
