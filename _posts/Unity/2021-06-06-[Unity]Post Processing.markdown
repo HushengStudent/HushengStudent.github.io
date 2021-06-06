@@ -8,6 +8,8 @@ comments: true
 
 Post Processing
 
+![图片](https://raw.githubusercontent.com/HushengStudent/HushengStudent.github.io/master/_posts/Unity/%23%E5%90%8E%E5%A4%84%E7%90%86/CameraRenderFlowCmdBuffers.png)
+
 ```csharp
 private static void SetRenderTargetWithLoadStoreAction(this CommandBuffer cmd
             , RenderTargetIdentifier rt, LoadAction loadAction, StoreAction storeAction)
@@ -65,3 +67,5 @@ public static void BuiltinBlit(this CommandBuffer cmd, RenderTargetIdentifier so
             return o;
         }
 ```
+
+![图片](https://raw.githubusercontent.com/HushengStudent/HushengStudent.github.io/master/_posts/Unity/%23%E5%90%8E%E5%A4%84%E7%90%86/PostProcess.png)
