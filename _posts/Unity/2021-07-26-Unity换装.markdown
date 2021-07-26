@@ -11,7 +11,7 @@ comments: true
 参考：[https://blog.uwa4d.com/archives/avartar.html](https://blog.uwa4d.com/archives/avartar.html)
 
 参考文章中，通过Combine Mesh降低DrawCall，合并材质的时候，纹理是通过合并成一个纹理，Mesh计算新的UV坐标来实现的。
-![图片](https://github.com/HushengStudent/UnityAvatarProject/blob/main/Texture.png)
+![图片](https://raw.githubusercontent.com/HushengStudent/UnityAvatarProject/main/Texture.png)
 
 本文旨在修改纹理合并的这一个过程，通过修改Shader的UV计算来实现。
 
@@ -72,4 +72,4 @@ fixed4 frag (v2f i) : SV_Target
 }
 ```
 
-![图片](https://github.com/HushengStudent/UnityAvatarProject/blob/main/Mat.png)
+![图片](https://raw.githubusercontent.com/HushengStudent/UnityAvatarProject/main/Mat.png)
