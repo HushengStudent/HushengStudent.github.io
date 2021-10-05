@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity Shader]Shader Learing(Render Pipeline篇)"
+title:  "[Shader]Shader Learing(Render Pipeline篇)"
 date:   2014-08-11 10:10:10
 categories: Shader
 comments: true

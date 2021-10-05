@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity Shader]Shader Learing(Surface and Vertex&Fragment  Shader篇)"
+title:  "[Shader]Shader Learing(Surface and Vertex&Fragment  Shader篇)"
 date:   2017-03-04 01:34:10
 categories: Shader
 comments: true

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity Shader]Shader Learing(ShaderLab syntax篇)"
+title:  "[Shader]Shader Learing(ShaderLab syntax篇)"
 date:   2017-03-14 22:59:10
 categories: Shader
 comments: true

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity Shader]Shader Learing(Basic Lighting And Texturing篇)"
+title:  "[Shader]Shader Learing(Basic Lighting And Texturing篇)"
 date:   2017-04-12 23:34:10
 categories: Shader
 comments: true

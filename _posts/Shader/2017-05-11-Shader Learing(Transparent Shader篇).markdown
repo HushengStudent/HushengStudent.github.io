@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity Shader]Shader Learing(Transparent Shader篇)"
+title:  "[Shader]Shader Learing(Transparent Shader篇)"
 date:   2017-05-11 00:00:10
 categories: Shader
 comments: true

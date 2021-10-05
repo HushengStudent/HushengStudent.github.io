@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity Shader]Cel Shading and Tone Based Shading"
+title:  "[Shader]Cel Shading and Tone Based Shading"
 date:   2021-10-01 00:00:10
 categories: Shader
 comments: true
