@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "[渲染]Unity线性空间"
+title:  "[图形渲染]Unity线性空间"
 date:   2020-06-03 23:49:00
-categories: 渲染
+categories: 图形渲染
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "[UIFramework]UIFramework之Unity4.x 资源加载策略"
 date:   2017-05-07 21:01:10
-categories: 框架
+categories: 基础框架
 comments: true
 ---
 

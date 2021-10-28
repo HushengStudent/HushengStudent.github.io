@@ -2,7 +2,7 @@
 layout: post
 title:  "empty"
 date:   2014-12-11 10:10:10
-categories: 渲染
+categories: 图形渲染
 comments: true
 ---
 empty

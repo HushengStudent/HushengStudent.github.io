@@ -2,7 +2,7 @@
 layout: post
 title:  "[UIFramework]UIFramework之单例滥用解决策略"
 date:   2017-04-29 14:52:10
-categories: 框架
+categories: 基础框架
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "[Unity 优化]NGUI 渲染原理"
 date:   2016-12-07 00:20:10
-categories: 优化
+categories: 性能优化
 comments: true
 ---
 

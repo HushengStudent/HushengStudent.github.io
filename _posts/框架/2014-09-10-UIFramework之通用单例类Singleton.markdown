@@ -2,7 +2,7 @@
 layout: post
 title:  "[UIFramework]UIFramework之通用单例类Singleton"
 date:   2014-09-10 10:10:10
-categories: 框架
+categories: 基础框架
 comments: true
 ---
 

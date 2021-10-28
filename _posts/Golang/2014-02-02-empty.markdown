@@ -2,7 +2,7 @@
 layout: post
 title:  "empty"
 date:   2014-02-02 10:10:10
-categories: Golang
+categories: Go
 comments: true
 ---
 empty

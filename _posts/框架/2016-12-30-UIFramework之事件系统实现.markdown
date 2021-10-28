@@ -2,7 +2,7 @@
 layout: post
 title:  "[UIFramework]UIFramework之事件系统实现"
 date:   2016-12-30 01:38:10
-categories: 框架
+categories: 基础框架
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "[UIFramework]UIFramework之Unity5.x AssetBundle打包策略"
 date:   2017-09-09 11:29:10
-categories: 框架
+categories: 基础框架
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "[一个简单的游戏框架]Lua相关"
 date:   2018-03-08 00:00:10
-categories: 框架
+categories: 基础框架
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "[Unity 优化]Unity Android Profiler"
 date:   2017-05-20 16:35:10
-categories: 优化
+categories: 性能优化
 comments: true
 ---
 

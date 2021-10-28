@@ -2,7 +2,7 @@
 layout: post
 title:  "[Unity 优化]资源优化之纹理优化"
 date:   2017-08-27 00:16:10
-categories: 优化
+categories: 性能优化
 comments: true
 ---
 
