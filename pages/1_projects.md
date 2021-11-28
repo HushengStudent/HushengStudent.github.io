@@ -15,5 +15,3 @@ permalink: /projects/
 [myShaderLibrary](https://github.com/HushengStudent/myShaderLibrary)：`My Unity Shader Library.`
 
 [myEngine](https://github.com/HushengStudent/myEngine)：`A simple game engine.`
-
-### 我的推荐
