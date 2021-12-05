@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Unity 优化]NGUI Draw Call优化"
+title:  "[性能优化]NGUI Draw Call优化"
 date:   2014-10-10 10:10:10
 categories: 性能优化
 comments: true
