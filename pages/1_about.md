@@ -27,4 +27,4 @@ QQ:1258164851
 ![图片](https://github.com/HushengStudent/HushengStudent.github.io/blob/master/pages/%23%E5%9B%BE%E7%89%87/logo.png?raw=true)
 
 
-3、上海叠纸科技有限公司：
+3、上海叠纸科技有限公司：(二次元3D 策略塔防手游)
