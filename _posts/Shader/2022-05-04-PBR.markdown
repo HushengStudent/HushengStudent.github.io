@@ -115,4 +115,4 @@ BxDF可细分为以下几类：
 ⑥SSS(次表面散射，也称3S，Subsurface Scattering)：它是模拟光进入半透明或者有一定透明深度的材质(皮肤、玉石、大理石、蜡烛等)后，在内部散射开来，然后又通过表面反射出来的光照模拟技术。
 关于次表面散射方面的研究，比较好的是Jensen的文章《A Practical Model for Subsurface Light Transport》，该文提出了一个较为全面的SSS模型，将它建模成一个双向表面散射反射分布函数(BSSRDF)。
 
-⑦BSSRDF(双向表面散射分布函数，Bidirectional Surface Scattering Reflectance Distribution Function)：它常用于模拟透明材质，目前是主流技术。它和BRDF的不同之处在于，BSSRDF可以再现光线透射材质的效果，还可以指定不同的光线入射位置和出射位置：
+⑦BSSRDF(双向表面散射分布函数，Bidirectional Surface Scattering Reflectance Distribution Function)：它常用于模拟透明材质，目前是主流技术。它和BRDF的不同之处在于，BSSRDF可以再现光线透射材质的效果，还可以指定不同的光线入射位置和出射位置。
